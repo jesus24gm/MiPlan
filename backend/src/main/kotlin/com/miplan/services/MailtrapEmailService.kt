@@ -17,7 +17,8 @@ import kotlinx.serialization.encodeToString
  */
 class MailtrapEmailService(config: ApplicationConfig) : IEmailService {
     
-    private val apiToken = config.propertyOrNull("email.mailtrap_api_token")?.getString() 
+    private val apiToken = config.propertyOrNull("mailtrap.api_token")?.getString()
+        ?: config.propertyOrNull("email.mailtrap_api_token")?.getString() 
         ?: config.property("email.password").getString()
     private val from = config.propertyOrNull("email.from")?.getString()
         ?: "MiPlan <noreply@miplan.com>"

@@ -31,6 +31,7 @@ fun Application.module() {
     val jwtConfig = JwtConfig(environment.config)
     // Detectar qué servicio de email usar
     val emailService: IEmailService = when {
+        environment.config.propertyOrNull("mailtrap.api_token") != null || 
         environment.config.propertyOrNull("email.mailtrap_api_token") != null -> {
             MailtrapEmailService(environment.config)
         }
