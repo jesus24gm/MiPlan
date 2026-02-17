@@ -96,18 +96,19 @@ class MailtrapEmailService(config: ApplicationConfig) : IEmailService {
                 html = htmlContent
             )
             
-            val response = withContext(Dispatchers.IO) {
-                client.post("https://send.api.mailtrap.io/api/send") {
+            withContext(Dispatchers.IO) {
+                val response = client.post("https://send.api.mailtrap.io/api/send") {
                     header("Authorization", "Bearer $apiToken")
                     header("Content-Type", "application/json")
                     setBody(json.encodeToString(request))
                 }
-            }
-            
-            if (response.status.isSuccess()) {
-                println("✅ Email de verificación enviado a: $toEmail")
-            } else {
-                println("❌ Error al enviar email: ${response.status} - ${response.bodyAsText()}")
+                
+                if (response.status.isSuccess()) {
+                    println("✅ Email de verificación enviado a: $toEmail")
+                } else {
+                    val errorBody = try { response.bodyAsText() } catch (e: Exception) { "No response body" }
+                    println("❌ Error al enviar email: ${response.status} - $errorBody")
+                }
             }
         } catch (e: Exception) {
             println("❌ Error al enviar email: ${e.message}")
@@ -167,18 +168,19 @@ class MailtrapEmailService(config: ApplicationConfig) : IEmailService {
                 html = htmlContent
             )
             
-            val response = withContext(Dispatchers.IO) {
-                client.post("https://send.api.mailtrap.io/api/send") {
+            withContext(Dispatchers.IO) {
+                val response = client.post("https://send.api.mailtrap.io/api/send") {
                     header("Authorization", "Bearer $apiToken")
                     header("Content-Type", "application/json")
                     setBody(json.encodeToString(request))
                 }
-            }
-            
-            if (response.status.isSuccess()) {
-                println("✅ Email de recordatorio enviado a: $toEmail")
-            } else {
-                println("❌ Error al enviar email: ${response.status} - ${response.bodyAsText()}")
+                
+                if (response.status.isSuccess()) {
+                    println("✅ Email de recordatorio enviado a: $toEmail")
+                } else {
+                    val errorBody = try { response.bodyAsText() } catch (e: Exception) { "No response body" }
+                    println("❌ Error al enviar email: ${response.status} - $errorBody")
+                }
             }
         } catch (e: Exception) {
             println("❌ Error al enviar email: ${e.message}")
