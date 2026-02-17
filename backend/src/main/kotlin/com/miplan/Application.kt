@@ -8,6 +8,7 @@ import com.miplan.security.JwtConfig
 import com.miplan.services.AuthService
 import com.miplan.services.EmailService
 import com.miplan.services.IEmailService
+import com.miplan.services.MailtrapEmailService
 import com.miplan.services.ResendEmailService
 import com.miplan.services.TaskService
 import io.ktor.server.application.*
@@ -28,11 +29,17 @@ fun Application.module() {
     
     // Inicializar servicios
     val jwtConfig = JwtConfig(environment.config)
-    // Usar ResendEmailService si existe RESEND_API_KEY, sino usar EmailService (SMTP)
-    val emailService: IEmailService = if (environment.config.propertyOrNull("email.resend_api_key") != null) {
-        ResendEmailService(environment.config)
-    } else {
-        EmailService(environment.config)
+    // Detectar qué servicio de email usar
+    val emailService: IEmailService = when {
+        environment.config.propertyOrNull("email.mailtrap_api_token") != null -> {
+            MailtrapEmailService(environment.config)
+        }
+        environment.config.propertyOrNull("email.resend_api_key") != null -> {
+            ResendEmailService(environment.config)
+        }
+        else -> {
+            EmailService(environment.config)
+        }
     }
     
     // Inicializar repositorios
