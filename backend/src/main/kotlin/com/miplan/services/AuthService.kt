@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter
  */
 class AuthService(
     private val userRepository: UserRepository,
-    private val emailService: EmailService,
+    private val emailService: IEmailService,
     private val jwtConfig: JwtConfig
 ) {
     

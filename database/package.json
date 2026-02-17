@@ -1,0 +1,12 @@
+{
+  "name": "miplan-database-import",
+  "version": "1.0.0",
+  "description": "Import MiPlan database schema to Railway",
+  "main": "import-railway.js",
+  "scripts": {
+    "import": "node import-railway.js"
+  },
+  "dependencies": {
+    "mysql2": "^3.6.5"
+  }
+}

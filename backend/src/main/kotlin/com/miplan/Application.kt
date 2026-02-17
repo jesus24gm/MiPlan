@@ -7,6 +7,7 @@ import com.miplan.repositories.UserRepository
 import com.miplan.security.JwtConfig
 import com.miplan.services.AuthService
 import com.miplan.services.EmailService
+import com.miplan.services.ResendEmailService
 import com.miplan.services.TaskService
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -26,7 +27,7 @@ fun Application.module() {
     
     // Inicializar servicios
     val jwtConfig = JwtConfig(environment.config)
-    val emailService = EmailService(environment.config)
+    val emailService = ResendEmailService(environment.config)
     
     // Inicializar repositorios
     val userRepository = UserRepository()

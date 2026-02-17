@@ -53,6 +53,11 @@ dependencies {
     // Email
     implementation("org.apache.commons:commons-email:1.5")
     
+    // HTTP Client for Resend
+    implementation("io.ktor:ktor-client-core:$ktor_version")
+    implementation("io.ktor:ktor-client-cio:$ktor_version")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
+    
     // Logging
     implementation("ch.qos.logback:logback-classic:1.4.11")
     
