@@ -37,7 +37,7 @@ class ResendEmailService(config: ApplicationConfig) : IEmailService {
     /**
      * Envía un email de verificación
      */
-    suspend fun sendVerificationEmail(toEmail: String, name: String, token: String) {
+    override suspend fun sendVerificationEmail(toEmail: String, name: String, token: String) {
         try {
             val htmlContent = """
                 <!DOCTYPE html>
@@ -107,7 +107,7 @@ class ResendEmailService(config: ApplicationConfig) : IEmailService {
     /**
      * Envía un email de recordatorio de tarea
      */
-    suspend fun sendTaskReminderEmail(toEmail: String, name: String, taskTitle: String, dueDate: String) {
+    override suspend fun sendTaskReminderEmail(toEmail: String, name: String, taskTitle: String, dueDate: String) {
         try {
             val htmlContent = """
                 <!DOCTYPE html>
