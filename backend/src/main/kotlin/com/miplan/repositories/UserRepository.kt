@@ -21,7 +21,7 @@ class UserRepository {
         passwordHash: String,
         name: String,
         roleId: Int,
-        verificationToken: String
+        verificationToken: String?
     ): User? = dbQuery {
         val insertStatement = Users.insert {
             it[Users.email] = email
