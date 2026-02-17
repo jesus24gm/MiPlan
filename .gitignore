@@ -1,0 +1,43 @@
+# Android
+android/.gradle/
+android/build/
+android/local.properties
+android/.idea/
+android/*.iml
+android/app/build/
+android/app/release/
+android/captures/
+android/.externalNativeBuild/
+android/.cxx/
+
+# Backend
+backend/.gradle/
+backend/build/
+backend/.idea/
+backend/*.iml
+backend/out/
+
+# Database
+database/backup/
+
+# Environment
+.env
+*.env
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# IDE
+.vscode/
+*.code-workspace
+
+# Logs
+*.log
+
+# Temporary
+*.tmp
+*.temp

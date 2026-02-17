@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MiPlan</string>
+    
+    <!-- Auth -->
+    <string name="login">Iniciar Sesión</string>
+    <string name="register">Registrarse</string>
+    <string name="email">Email</string>
+    <string name="password">Contraseña</string>
+    <string name="name">Nombre</string>
+    <string name="logout">Cerrar Sesión</string>
+    
+    <!-- Tasks -->
+    <string name="tasks">Tareas</string>
+    <string name="create_task">Crear Tarea</string>
+    <string name="edit_task">Editar Tarea</string>
+    <string name="delete_task">Eliminar Tarea</string>
+    <string name="task_title">Título</string>
+    <string name="task_description">Descripción</string>
+    <string name="task_priority">Prioridad</string>
+    <string name="task_status">Estado</string>
+    <string name="due_date">Fecha límite</string>
+    
+    <!-- Boards -->
+    <string name="boards">Tableros</string>
+    <string name="create_board">Crear Tablero</string>
+    <string name="edit_board">Editar Tablero</string>
+    <string name="delete_board">Eliminar Tablero</string>
+    
+    <!-- Calendar -->
+    <string name="calendar">Calendario</string>
+    
+    <!-- Notifications -->
+    <string name="notifications">Notificaciones</string>
+    
+    <!-- Profile -->
+    <string name="profile">Perfil</string>
+    
+    <!-- Admin -->
+    <string name="admin">Administración</string>
+    
+    <!-- Common -->
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="delete">Eliminar</string>
+    <string name="edit">Editar</string>
+    <string name="loading">Cargando…</string>
+    <string name="error">Error</string>
+    <string name="success">Éxito</string>
+</resources>
