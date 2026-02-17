@@ -120,6 +120,8 @@ fun Route.taskRoutes(taskService: TaskService) {
                         ?: throw IllegalArgumentException("Usuario no autenticado")
                     
                     val request = call.receive<CreateTaskRequest>()
+                    println("📝 Creando tarea para usuario $userId: ${request.title}")
+                    
                     val task = taskService.createTask(
                         userId = userId,
                         title = request.title,
@@ -128,11 +130,16 @@ fun Route.taskRoutes(taskService: TaskService) {
                         dueDateStr = request.dueDate,
                         boardId = request.boardId
                     )
+                    println("✅ Tarea creada exitosamente: ${task.id}")
                     call.respond(HttpStatusCode.Created, successResponse("Tarea creada", task))
                 } catch (e: IllegalArgumentException) {
+                    println("❌ Error de validación al crear tarea: ${e.message}")
+                    e.printStackTrace()
                     call.respond(HttpStatusCode.BadRequest, errorResponse(e.message ?: "Error al crear tarea"))
                 } catch (e: Exception) {
-                    call.respond(HttpStatusCode.InternalServerError, errorResponse("Error interno del servidor"))
+                    println("❌ Error interno al crear tarea: ${e.message}")
+                    e.printStackTrace()
+                    call.respond(HttpStatusCode.InternalServerError, errorResponse(e.message ?: "Error interno del servidor"))
                 }
             }
             
