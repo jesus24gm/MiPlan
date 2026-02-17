@@ -5,9 +5,9 @@ import org.apache.commons.mail.DefaultAuthenticator
 import org.apache.commons.mail.SimpleEmail
 
 /**
- * Servicio para envío de emails
+ * Servicio para envío de emails usando SMTP
  */
-class EmailService(config: ApplicationConfig) {
+class EmailService(config: ApplicationConfig) : IEmailService {
     
     private val host = config.property("email.host").getString()
     private val port = config.property("email.port").getString().toInt()
@@ -19,7 +19,7 @@ class EmailService(config: ApplicationConfig) {
     /**
      * Envía un email de verificación
      */
-    fun sendVerificationEmail(toEmail: String, name: String, token: String) {
+    override suspend fun sendVerificationEmail(toEmail: String, name: String, token: String) {
         try {
             val email = SimpleEmail()
             email.hostName = host
@@ -55,7 +55,7 @@ class EmailService(config: ApplicationConfig) {
     /**
      * Envía un email de recordatorio de tarea
      */
-    fun sendTaskReminderEmail(toEmail: String, name: String, taskTitle: String, dueDate: String) {
+    override suspend fun sendTaskReminderEmail(toEmail: String, name: String, taskTitle: String, dueDate: String) {
         try {
             val email = SimpleEmail()
             email.hostName = host

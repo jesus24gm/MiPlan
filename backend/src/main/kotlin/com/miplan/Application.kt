@@ -27,7 +27,12 @@ fun Application.module() {
     
     // Inicializar servicios
     val jwtConfig = JwtConfig(environment.config)
-    val emailService = ResendEmailService(environment.config)
+    // Usar ResendEmailService si existe RESEND_API_KEY, sino usar EmailService (SMTP)
+    val emailService: IEmailService = if (environment.config.propertyOrNull("email.resend_api_key") != null) {
+        ResendEmailService(environment.config)
+    } else {
+        EmailService(environment.config)
+    }
     
     // Inicializar repositorios
     val userRepository = UserRepository()
