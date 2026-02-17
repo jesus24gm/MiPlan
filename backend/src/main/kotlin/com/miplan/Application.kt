@@ -7,6 +7,7 @@ import com.miplan.repositories.UserRepository
 import com.miplan.security.JwtConfig
 import com.miplan.services.AuthService
 import com.miplan.services.EmailService
+import com.miplan.services.IEmailService
 import com.miplan.services.ResendEmailService
 import com.miplan.services.TaskService
 import io.ktor.server.application.*
