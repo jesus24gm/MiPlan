@@ -2,6 +2,7 @@ package com.miplan.services
 
 import com.miplan.models.responses.TaskResponse
 import com.miplan.repositories.TaskRepository
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -157,7 +158,16 @@ class TaskService(
             throw IllegalArgumentException("El título es demasiado largo")
         }
         
-        val dueDate = dueDateStr?.let { LocalDateTime.parse(it, dateFormatter) }
+        // Parsear fecha - puede venir como "2026-02-18" o "2026-02-18T00:00:00"
+        val dueDate = dueDateStr?.let { dateStr ->
+            try {
+                // Intentar parsear como LocalDateTime primero
+                LocalDateTime.parse(dateStr, dateFormatter)
+            } catch (e: Exception) {
+                // Si falla, parsear como LocalDate y convertir a LocalDateTime
+                LocalDate.parse(dateStr).atStartOfDay()
+            }
+        }
         
         val task = taskRepository.create(
             title = title,
@@ -208,7 +218,16 @@ class TaskService(
             throw IllegalArgumentException("El título es obligatorio")
         }
         
-        val dueDate = dueDateStr?.let { LocalDateTime.parse(it, dateFormatter) }
+        // Parsear fecha - puede venir como "2026-02-18" o "2026-02-18T00:00:00"
+        val dueDate = dueDateStr?.let { dateStr ->
+            try {
+                // Intentar parsear como LocalDateTime primero
+                LocalDateTime.parse(dateStr, dateFormatter)
+            } catch (e: Exception) {
+                // Si falla, parsear como LocalDate y convertir a LocalDateTime
+                LocalDate.parse(dateStr).atStartOfDay()
+            }
+        }
         
         taskRepository.update(
             id = taskId,
