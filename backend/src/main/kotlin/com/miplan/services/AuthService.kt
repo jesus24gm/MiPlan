@@ -35,23 +35,25 @@ class AuthService(
             throw IllegalArgumentException("La contraseña debe tener al menos 6 caracteres")
         }
         
-        // Hashear contraseña y generar token
+        // Hashear contraseña
         val passwordHash = PasswordHasher.hashPassword(password)
-        val verificationToken = PasswordHasher.generateVerificationToken()
         
-        // Crear usuario con rol USER por defecto
+        // Crear usuario con rol USER por defecto y verificado automáticamente
         val user = userRepository.create(
             email = email,
             passwordHash = passwordHash,
             name = name,
             roleId = RoleType.USER.id,
-            verificationToken = verificationToken
+            verificationToken = null
         ) ?: throw Exception("Error al crear usuario")
         
-        // Enviar email de verificación
-        emailService.sendVerificationEmail(email, name, verificationToken)
+        // Marcar como verificado inmediatamente
+        userRepository.verifyEmail(user.id)
         
-        return "Usuario registrado. Por favor verifica tu email."
+        // No enviar email de verificación (desactivado temporalmente)
+        // emailService.sendVerificationEmail(email, name, verificationToken)
+        
+        return "Usuario registrado exitosamente. Ya puedes iniciar sesión."
     }
     
     /**
@@ -67,10 +69,10 @@ class AuthService(
             throw IllegalArgumentException("Credenciales inválidas")
         }
         
-        // Verificar que el email esté verificado
-        if (!user.isVerified) {
-            throw IllegalArgumentException("Por favor verifica tu email antes de iniciar sesión")
-        }
+        // Verificación de email desactivada temporalmente
+        // if (!user.isVerified) {
+        //     throw IllegalArgumentException("Por favor verifica tu email antes de iniciar sesión")
+        // }
         
         // Obtener rol
         val roleName = userRepository.getUserRoleName(user.id)
