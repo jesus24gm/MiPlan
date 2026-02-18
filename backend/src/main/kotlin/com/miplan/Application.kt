@@ -62,6 +62,7 @@ fun Application.module() {
     configureSecurity(jwtConfig)
     configureRouting(authService, taskService)
     
-    log.info("MiPlan Backend iniciado correctamente - v1.2.0 con imageUrl en todas las respuestas")
-    println("✅ Backend v1.2.0 - imageUrl incluido en getUserTasks, getTaskById, getTasksByBoard, getTasksByStatus, getTasksByDate")
+    log.info("MiPlan Backend iniciado correctamente - v2.0.0 con Sistema Kanban")
+    println("✅ Backend v2.0.0 - Sistema Kanban: Boards, Columns, Cards, Checklists, Attachments")
+    println("📋 Nuevas tablas: columns, cards, card_checklists, checklist_items, card_attachments")
 }
