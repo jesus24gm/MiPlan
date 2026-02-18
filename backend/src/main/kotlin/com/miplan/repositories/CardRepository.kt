@@ -110,7 +110,7 @@ class CardRepository {
                     (Cards.position greaterEq newPosition) and 
                     (Cards.position less oldPosition)
                 }) {
-                    it[position] = Cards.position + 1
+                    it.update(position, position.plus(1))
                 }
             } else {
                 // Mover hacia abajo
@@ -119,7 +119,7 @@ class CardRepository {
                     (Cards.position greater oldPosition) and 
                     (Cards.position lessEq newPosition)
                 }) {
-                    it[position] = Cards.position - 1
+                    it.update(position, position.minus(1))
                 }
             }
         } else {
@@ -129,7 +129,7 @@ class CardRepository {
                 (Cards.columnId eq oldColumnId) and 
                 (Cards.position greater oldPosition)
             }) {
-                it[position] = Cards.position - 1
+                it.update(position, position.minus(1))
             }
             
             // Incrementar posiciones en columna destino
@@ -137,7 +137,7 @@ class CardRepository {
                 (Cards.columnId eq newColumnId) and 
                 (Cards.position greaterEq newPosition)
             }) {
-                it[position] = Cards.position + 1
+                it.update(position, position.plus(1))
             }
         }
         

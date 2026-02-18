@@ -20,12 +20,14 @@ class BoardRepository {
         name: String,
         description: String?,
         color: String,
+        backgroundImageUrl: String?,
         userId: Int
     ): Board? = dbQuery {
         val insertStatement = Boards.insert {
             it[Boards.name] = name
             it[Boards.description] = description
             it[Boards.color] = color
+            it[Boards.backgroundImageUrl] = backgroundImageUrl
             it[Boards.userId] = userId
             it[Boards.createdAt] = LocalDateTime.now()
             it[Boards.updatedAt] = LocalDateTime.now()
@@ -57,14 +59,16 @@ class BoardRepository {
      */
     suspend fun update(
         id: Int,
-        name: String,
+        name: String?,
         description: String?,
-        color: String
+        color: String?,
+        backgroundImageUrl: String?
     ): Boolean = dbQuery {
         Boards.update({ Boards.id eq id }) {
-            it[Boards.name] = name
-            it[Boards.description] = description
-            it[Boards.color] = color
+            name?.let { value -> it[Boards.name] = value }
+            if (description != null) it[Boards.description] = description
+            color?.let { value -> it[Boards.color] = value }
+            if (backgroundImageUrl != null) it[Boards.backgroundImageUrl] = backgroundImageUrl
             it[updatedAt] = LocalDateTime.now()
         } > 0
     }
@@ -102,6 +106,7 @@ class BoardRepository {
             name = row[Boards.name],
             description = row[Boards.description],
             color = row[Boards.color],
+            backgroundImageUrl = row[Boards.backgroundImageUrl],
             userId = row[Boards.userId],
             createdAt = row[Boards.createdAt],
             updatedAt = row[Boards.updatedAt]

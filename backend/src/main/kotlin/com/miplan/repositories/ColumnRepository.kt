@@ -87,7 +87,7 @@ class ColumnRepository {
                 (Columns.position greaterEq newPosition) and 
                 (Columns.position less oldPosition)
             }) {
-                it[position] = Columns.position + 1
+                it.update(position, position.plus(1))
             }
         } else {
             // Mover hacia abajo: decrementar posición de columnas entre oldPosition y newPosition
@@ -96,7 +96,7 @@ class ColumnRepository {
                 (Columns.position greater oldPosition) and 
                 (Columns.position lessEq newPosition)
             }) {
-                it[position] = Columns.position - 1
+                it.update(position, position.minus(1))
             }
         }
         
