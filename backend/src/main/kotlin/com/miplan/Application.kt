@@ -3,15 +3,9 @@ package com.miplan
 import com.miplan.database.DatabaseFactory
 import com.miplan.database.Migrations
 import com.miplan.plugins.*
-import com.miplan.repositories.TaskRepository
-import com.miplan.repositories.UserRepository
+import com.miplan.repositories.*
 import com.miplan.security.JwtConfig
-import com.miplan.services.AuthService
-import com.miplan.services.EmailService
-import com.miplan.services.IEmailService
-import com.miplan.services.MailtrapEmailService
-import com.miplan.services.ResendEmailService
-import com.miplan.services.TaskService
+import com.miplan.services.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
