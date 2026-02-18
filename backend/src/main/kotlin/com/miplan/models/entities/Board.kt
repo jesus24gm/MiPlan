@@ -10,7 +10,6 @@ data class Board(
     val name: String,
     val description: String?,
     val color: String,
-    val backgroundImageUrl: String?,
     val userId: Int,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime

@@ -50,27 +50,17 @@ fun Application.module() {
     // Inicializar repositorios
     val userRepository = UserRepository()
     val taskRepository = TaskRepository()
-    val boardRepository = BoardRepository()
-    val columnRepository = ColumnRepository()
-    val cardRepository = CardRepository()
-    val checklistRepository = ChecklistRepository()
-    val attachmentRepository = AttachmentRepository()
     
     // Inicializar servicios de negocio
     val authService = AuthService(userRepository, emailService, jwtConfig)
     val taskService = TaskService(taskRepository)
-    val boardService = BoardService(boardRepository, columnRepository, cardRepository)
-    val columnService = ColumnService(columnRepository)
-    val cardService = CardService(cardRepository, checklistRepository, attachmentRepository)
-    val checklistService = ChecklistService(checklistRepository)
-    val attachmentService = AttachmentService(attachmentRepository)
     
     // Configurar plugins
     configureSerialization()
     configureCORS()
     configureStatusPages()
     configureSecurity(jwtConfig)
-    configureRouting(authService, taskService, boardService, columnService, cardService, checklistService, attachmentService)
+    configureRouting(authService, taskService)
     
     log.info("MiPlan Backend iniciado correctamente - v2.0.0 con Sistema Kanban")
     println("✅ Backend v2.0.0 - Sistema Kanban: Boards, Columns, Cards, Checklists, Attachments")

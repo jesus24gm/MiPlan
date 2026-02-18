@@ -1,7 +1,10 @@
 package com.miplan.plugins
 
-import com.miplan.routes.*
-import com.miplan.services.*
+import com.miplan.routes.authRoutes
+import com.miplan.routes.migrationRoutes
+import com.miplan.routes.taskRoutes
+import com.miplan.services.AuthService
+import com.miplan.services.TaskService
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -11,16 +14,11 @@ import io.ktor.server.routing.*
  */
 fun Application.configureRouting(
     authService: AuthService,
-    taskService: TaskService,
-    boardService: BoardService,
-    columnService: ColumnService,
-    cardService: CardService,
-    checklistService: ChecklistService,
-    attachmentService: AttachmentService
+    taskService: TaskService
 ) {
     routing {
         get("/") {
-            call.respondText("MiPlan API v2.0.0 - Sistema Kanban")
+            call.respondText("MiPlan API v1.0.0")
         }
         
         get("/health") {
@@ -30,7 +28,5 @@ fun Application.configureRouting(
         migrationRoutes()
         authRoutes(authService)
         taskRoutes(taskService)
-        boardRoutes(boardService)
-        kanbanRoutes(columnService, cardService, checklistService, attachmentService, boardService)
     }
 }
