@@ -16,7 +16,7 @@ fun Route.boardRoutes(boardService: BoardService) {
     
     route("/api/boards") {
         
-        authenticate {
+        authenticate("auth-jwt") {
             
             get {
                 try {

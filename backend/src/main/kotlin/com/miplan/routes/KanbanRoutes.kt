@@ -18,7 +18,7 @@ fun Route.kanbanRoutes(
     boardService: BoardService
 ) {
     
-    authenticate {
+    authenticate("auth-jwt") {
         
         // COLUMNS
         route("/api/columns") {

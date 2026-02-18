@@ -65,8 +65,4 @@ fun Application.module() {
     configureStatusPages()
     configureSecurity(jwtConfig)
     configureRouting(authService, taskService, boardService, columnService, cardService, checklistService, attachmentService)
-    
-    log.info("MiPlan Backend iniciado correctamente - v2.0.0 con Sistema Kanban")
-    println("✅ Backend v2.0.0 - Sistema Kanban: Boards, Columns, Cards, Checklists, Attachments")
-    println("📋 Nuevas tablas: columns, cards, card_checklists, checklist_items, card_attachments")
 }
