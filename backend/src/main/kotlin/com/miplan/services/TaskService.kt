@@ -158,14 +158,32 @@ class TaskService(
             throw IllegalArgumentException("El título es demasiado largo")
         }
         
-        // Parsear fecha - puede venir como "2026-02-18" o "2026-02-18T00:00:00"
+        // Parsear fecha - puede venir como "2026-02-18", "2026-02-18T00:00:00" o "2026-02-18 14:30:00"
         val dueDate = dueDateStr?.let { dateStr ->
             try {
-                // Intentar parsear como LocalDateTime primero
-                LocalDateTime.parse(dateStr, dateFormatter)
+                when {
+                    // Formato con espacio: "2026-02-18 14:30:00"
+                    dateStr.contains(" ") && dateStr.length > 10 -> {
+                        val formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                        LocalDateTime.parse(dateStr, formatter)
+                    }
+                    // Formato ISO con T: "2026-02-18T00:00:00"
+                    dateStr.contains("T") -> {
+                        LocalDateTime.parse(dateStr, dateFormatter)
+                    }
+                    // Solo fecha: "2026-02-18"
+                    else -> {
+                        LocalDate.parse(dateStr).atStartOfDay()
+                    }
+                }
             } catch (e: Exception) {
-                // Si falla, parsear como LocalDate y convertir a LocalDateTime
-                LocalDate.parse(dateStr).atStartOfDay()
+                println("⚠️ Error parseando fecha '$dateStr': ${e.message}")
+                // Fallback: intentar como LocalDate
+                try {
+                    LocalDate.parse(dateStr).atStartOfDay()
+                } catch (e2: Exception) {
+                    null
+                }
             }
         }
         
@@ -218,14 +236,32 @@ class TaskService(
             throw IllegalArgumentException("El título es obligatorio")
         }
         
-        // Parsear fecha - puede venir como "2026-02-18" o "2026-02-18T00:00:00"
+        // Parsear fecha - puede venir como "2026-02-18", "2026-02-18T00:00:00" o "2026-02-18 14:30:00"
         val dueDate = dueDateStr?.let { dateStr ->
             try {
-                // Intentar parsear como LocalDateTime primero
-                LocalDateTime.parse(dateStr, dateFormatter)
+                when {
+                    // Formato con espacio: "2026-02-18 14:30:00"
+                    dateStr.contains(" ") && dateStr.length > 10 -> {
+                        val formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                        LocalDateTime.parse(dateStr, formatter)
+                    }
+                    // Formato ISO con T: "2026-02-18T00:00:00"
+                    dateStr.contains("T") -> {
+                        LocalDateTime.parse(dateStr, dateFormatter)
+                    }
+                    // Solo fecha: "2026-02-18"
+                    else -> {
+                        LocalDate.parse(dateStr).atStartOfDay()
+                    }
+                }
             } catch (e: Exception) {
-                // Si falla, parsear como LocalDate y convertir a LocalDateTime
-                LocalDate.parse(dateStr).atStartOfDay()
+                println("⚠️ Error parseando fecha '$dateStr': ${e.message}")
+                // Fallback: intentar como LocalDate
+                try {
+                    LocalDate.parse(dateStr).atStartOfDay()
+                } catch (e2: Exception) {
+                    null
+                }
             }
         }
         
