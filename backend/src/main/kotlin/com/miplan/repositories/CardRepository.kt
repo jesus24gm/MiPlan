@@ -93,55 +93,7 @@ class CardRepository {
      * Mover tarjeta a otra columna y/o posición
      */
     suspend fun moveCard(id: Int, newColumnId: Int, newPosition: Int): Card? = dbQuery {
-        val card = findById(id) ?: return@dbQuery null
-        val oldColumnId = card.columnId
-        val oldPosition = card.position
-        
-        if (oldColumnId == newColumnId && oldPosition == newPosition) {
-            return@dbQuery card
-        }
-        
-        if (oldColumnId == newColumnId) {
-            // Mover dentro de la misma columna
-            if (newPosition < oldPosition) {
-                // Mover hacia arriba
-                Cards.update({ 
-                    (Cards.columnId eq oldColumnId) and 
-                    (Cards.position greaterEq newPosition) and 
-                    (Cards.position less oldPosition)
-                }) {
-                    it.update(position, position.plus(1))
-                }
-            } else {
-                // Mover hacia abajo
-                Cards.update({ 
-                    (Cards.columnId eq oldColumnId) and 
-                    (Cards.position greater oldPosition) and 
-                    (Cards.position lessEq newPosition)
-                }) {
-                    it.update(position, position.minus(1))
-                }
-            }
-        } else {
-            // Mover a otra columna
-            // Decrementar posiciones en columna origen
-            Cards.update({ 
-                (Cards.columnId eq oldColumnId) and 
-                (Cards.position greater oldPosition)
-            }) {
-                it.update(position, position.minus(1))
-            }
-            
-            // Incrementar posiciones en columna destino
-            Cards.update({ 
-                (Cards.columnId eq newColumnId) and 
-                (Cards.position greaterEq newPosition)
-            }) {
-                it.update(position, position.plus(1))
-            }
-        }
-        
-        // Actualizar la tarjeta
+        // Simplificado: solo actualiza la columna y posición sin reordenar otras tarjetas
         Cards.update({ Cards.id eq id }) {
             it[columnId] = newColumnId
             it[position] = newPosition

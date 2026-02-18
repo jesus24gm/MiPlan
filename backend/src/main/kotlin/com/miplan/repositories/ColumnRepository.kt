@@ -73,34 +73,7 @@ class ColumnRepository {
      * Mover columna a nueva posición
      */
     suspend fun moveColumn(id: Int, newPosition: Int): Column? = dbQuery {
-        val column = findById(id) ?: return@dbQuery null
-        val boardId = column.boardId
-        val oldPosition = column.position
-        
-        if (oldPosition == newPosition) return@dbQuery column
-        
-        // Reordenar otras columnas
-        if (newPosition < oldPosition) {
-            // Mover hacia arriba: incrementar posición de columnas entre newPosition y oldPosition
-            Columns.update({ 
-                (Columns.boardId eq boardId) and 
-                (Columns.position greaterEq newPosition) and 
-                (Columns.position less oldPosition)
-            }) {
-                it.update(position, position.plus(1))
-            }
-        } else {
-            // Mover hacia abajo: decrementar posición de columnas entre oldPosition y newPosition
-            Columns.update({ 
-                (Columns.boardId eq boardId) and 
-                (Columns.position greater oldPosition) and 
-                (Columns.position lessEq newPosition)
-            }) {
-                it.update(position, position.minus(1))
-            }
-        }
-        
-        // Actualizar posición de la columna
+        // Simplificado: solo actualiza la posición sin reordenar otras columnas
         update(id, null, newPosition)
         findById(id)
     }
