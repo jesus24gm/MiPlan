@@ -6,7 +6,6 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.sql.Statement
 
 /**
  * Rutas para ejecutar migraciones manualmente (temporal)
@@ -16,24 +15,9 @@ fun Route.migrationRoutes() {
         get {
             try {
                 println("🔧 Ejecutando migraciones manualmente...")
-                
-                val result = transaction {
-                    // Método directo con SQL puro
-                    val stmt = this.connection.createStatement()
-                    try {
-                        // Intentar agregar la columna
-                        stmt.execute("ALTER TABLE tasks ADD COLUMN IF NOT EXISTS image_url VARCHAR(500)")
-                        "✅ Columna image_url agregada o ya existía"
-                    } catch (e: Exception) {
-                        "⚠️ Error: ${e.message}"
-                    } finally {
-                        stmt.close()
-                    }
-                }
-                
-                println(result)
+                Migrations.runMigrations()
                 call.respondText(
-                    "✅ Migración ejecutada.\n$result\n\nLa columna image_url debería estar disponible ahora.",
+                    "✅ Migraciones ejecutadas correctamente. La columna image_url ha sido agregada a la tabla tasks.",
                     ContentType.Text.Plain,
                     HttpStatusCode.OK
                 )
@@ -41,7 +25,7 @@ fun Route.migrationRoutes() {
                 println("❌ Error ejecutando migraciones: ${e.message}")
                 e.printStackTrace()
                 call.respondText(
-                    "❌ Error ejecutando migraciones: ${e.message}\n\nStack trace: ${e.stackTraceToString()}",
+                    "❌ Error ejecutando migraciones: ${e.message}",
                     ContentType.Text.Plain,
                     HttpStatusCode.InternalServerError
                 )
