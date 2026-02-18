@@ -1,6 +1,7 @@
 package com.miplan
 
 import com.miplan.database.DatabaseFactory
+import com.miplan.database.Migrations
 import com.miplan.plugins.*
 import com.miplan.repositories.TaskRepository
 import com.miplan.repositories.UserRepository
@@ -26,6 +27,9 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.module() {
     // Inicializar base de datos
     DatabaseFactory.init(environment.config)
+    
+    // Ejecutar migraciones
+    Migrations.runMigrations()
     
     // Inicializar servicios
     val jwtConfig = JwtConfig(environment.config)
