@@ -62,5 +62,6 @@ fun Application.module() {
     configureSecurity(jwtConfig)
     configureRouting(authService, taskService)
     
-    log.info("MiPlan Backend iniciado correctamente - v1.1.0 con soporte de imágenes")
+    log.info("MiPlan Backend iniciado correctamente - v1.2.0 con imageUrl en todas las respuestas")
+    println("✅ Backend v1.2.0 - imageUrl incluido en getUserTasks, getTaskById, getTasksByBoard, getTasksByStatus, getTasksByDate")
 }
