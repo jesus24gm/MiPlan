@@ -10,6 +10,7 @@ data class TaskResponse(
     val status: String,
     val priority: String,
     val dueDate: String? = null,
+    val imageUrl: String? = null,
     val boardId: Int? = null,
     val boardName: String? = null,
     val createdBy: Int,

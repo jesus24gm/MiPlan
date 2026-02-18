@@ -8,6 +8,7 @@ data class CreateTaskRequest(
     val description: String? = null,
     val priority: String,
     val dueDate: String? = null,
+    val imageUrl: String? = null,
     val boardId: Int? = null
 )
 
@@ -18,6 +19,7 @@ data class UpdateTaskRequest(
     val status: String,
     val priority: String,
     val dueDate: String? = null,
+    val imageUrl: String? = null,
     val boardId: Int? = null
 )
 

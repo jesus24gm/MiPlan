@@ -48,6 +48,7 @@ object Tasks : Table("tasks") {
     val status = varchar("status", 50).default("PENDING")
     val priority = varchar("priority", 50).default("MEDIUM")
     val dueDate = datetime("due_date").nullable()
+    val imageUrl = varchar("image_url", 500).nullable()
     val boardId = integer("board_id").references(Boards.id).nullable()
     val createdBy = integer("created_by").references(Users.id)
     val createdAt = datetime("created_at")

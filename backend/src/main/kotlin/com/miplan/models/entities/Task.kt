@@ -12,6 +12,7 @@ data class Task(
     val status: String,
     val priority: String,
     val dueDate: LocalDateTime?,
+    val imageUrl: String?,
     val boardId: Int?,
     val createdBy: Int,
     val createdAt: LocalDateTime,

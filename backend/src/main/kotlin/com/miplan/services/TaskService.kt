@@ -148,6 +148,7 @@ class TaskService(
         description: String?,
         priority: String,
         dueDateStr: String?,
+        imageUrl: String?,
         boardId: Int?
     ): TaskResponse {
         // Validaciones
@@ -192,6 +193,7 @@ class TaskService(
             description = description,
             priority = priority,
             dueDate = dueDate,
+            imageUrl = imageUrl,
             boardId = boardId,
             createdBy = userId
         ) ?: throw Exception("Error al crear tarea")
@@ -205,6 +207,7 @@ class TaskService(
             status = task.status,
             priority = task.priority,
             dueDate = task.dueDate?.format(dateFormatter),
+            imageUrl = task.imageUrl,
             boardId = task.boardId,
             boardName = boardName,
             createdBy = task.createdBy,
@@ -224,6 +227,7 @@ class TaskService(
         status: String,
         priority: String,
         dueDateStr: String?,
+        imageUrl: String?,
         boardId: Int?
     ): TaskResponse {
         // Verificar que la tarea pertenezca al usuario
@@ -272,6 +276,7 @@ class TaskService(
             status = status,
             priority = priority,
             dueDate = dueDate,
+            imageUrl = imageUrl,
             boardId = boardId
         )
         

@@ -128,6 +128,7 @@ fun Route.taskRoutes(taskService: TaskService) {
                         description = request.description,
                         priority = request.priority,
                         dueDateStr = request.dueDate,
+                        imageUrl = request.imageUrl,
                         boardId = request.boardId
                     )
                     println("✅ Tarea creada exitosamente: ${task.id}")
@@ -162,6 +163,7 @@ fun Route.taskRoutes(taskService: TaskService) {
                         status = request.status,
                         priority = request.priority,
                         dueDateStr = request.dueDate,
+                        imageUrl = request.imageUrl,
                         boardId = request.boardId
                     )
                     call.respond(HttpStatusCode.OK, successResponse("Tarea actualizada", task))

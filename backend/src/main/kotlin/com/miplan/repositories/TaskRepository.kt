@@ -21,6 +21,7 @@ class TaskRepository {
         description: String?,
         priority: String,
         dueDate: LocalDateTime?,
+        imageUrl: String?,
         boardId: Int?,
         createdBy: Int
     ): Task? = dbQuery {
@@ -30,6 +31,7 @@ class TaskRepository {
             it[Tasks.status] = "PENDING"
             it[Tasks.priority] = priority
             it[Tasks.dueDate] = dueDate
+            it[Tasks.imageUrl] = imageUrl
             it[Tasks.boardId] = boardId
             it[Tasks.createdBy] = createdBy
             it[Tasks.createdAt] = LocalDateTime.now()
@@ -102,6 +104,7 @@ class TaskRepository {
         status: String,
         priority: String,
         dueDate: LocalDateTime?,
+        imageUrl: String?,
         boardId: Int?
     ): Boolean = dbQuery {
         Tasks.update({ Tasks.id eq id }) {
@@ -110,6 +113,7 @@ class TaskRepository {
             it[Tasks.status] = status
             it[Tasks.priority] = priority
             it[Tasks.dueDate] = dueDate
+            it[Tasks.imageUrl] = imageUrl
             it[Tasks.boardId] = boardId
             it[updatedAt] = LocalDateTime.now()
         } > 0
@@ -162,6 +166,7 @@ class TaskRepository {
             status = row[Tasks.status],
             priority = row[Tasks.priority],
             dueDate = row[Tasks.dueDate],
+            imageUrl = row[Tasks.imageUrl],
             boardId = row[Tasks.boardId],
             createdBy = row[Tasks.createdBy],
             createdAt = row[Tasks.createdAt],
