@@ -15,17 +15,19 @@ fun Route.migrationRoutes() {
             try {
                 println("🔧 Ejecutando migraciones manualmente...")
                 Migrations.runMigrations()
-                call.respond(HttpStatusCode.OK, mapOf(
-                    "success" to true,
-                    "message" to "Migraciones ejecutadas correctamente"
-                ))
+                call.respondText(
+                    "✅ Migraciones ejecutadas correctamente. La columna image_url ha sido agregada a la tabla tasks.",
+                    ContentType.Text.Plain,
+                    HttpStatusCode.OK
+                )
             } catch (e: Exception) {
                 println("❌ Error ejecutando migraciones: ${e.message}")
                 e.printStackTrace()
-                call.respond(HttpStatusCode.InternalServerError, mapOf(
-                    "success" to false,
-                    "message" to "Error: ${e.message}"
-                ))
+                call.respondText(
+                    "❌ Error ejecutando migraciones: ${e.message}",
+                    ContentType.Text.Plain,
+                    HttpStatusCode.InternalServerError
+                )
             }
         }
     }
