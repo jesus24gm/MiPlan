@@ -1,6 +1,7 @@
 package com.miplan.plugins
 
 import com.miplan.routes.authRoutes
+import com.miplan.routes.migrationRoutes
 import com.miplan.routes.taskRoutes
 import com.miplan.services.AuthService
 import com.miplan.services.TaskService
@@ -24,6 +25,7 @@ fun Application.configureRouting(
             call.respondText("OK")
         }
         
+        migrationRoutes()
         authRoutes(authService)
         taskRoutes(taskService)
     }
