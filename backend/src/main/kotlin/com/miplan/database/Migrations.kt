@@ -44,19 +44,15 @@ object Migrations {
     private fun migration0_CleanupKanbanTables() {
         try {
             transaction {
-                println("🧹 Limpiando tablas Kanban existentes...")
-                
                 // Eliminar en orden inverso de dependencias
                 exec("DROP TABLE IF EXISTS card_attachments")
                 exec("DROP TABLE IF EXISTS checklist_items")
                 exec("DROP TABLE IF EXISTS card_checklists")
                 exec("DROP TABLE IF EXISTS cards")
                 exec("DROP TABLE IF EXISTS columns")
-                
-                println("✅ Tablas Kanban limpiadas")
             }
         } catch (e: Exception) {
-            println("⚠️ Error limpiando tablas Kanban: ${e.message}")
+            // Silenciar error
         }
     }
     
@@ -113,106 +109,102 @@ object Migrations {
     private fun migration3_CreateColumnsTable() {
         try {
             transaction {
-                println("📝 Migración 3: Creando tabla columns...")
                 exec("""
                     CREATE TABLE columns (
-                        id SERIAL PRIMARY KEY,
-                        board_id INTEGER NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        board_id INT NOT NULL,
                         title VARCHAR(255) NOT NULL,
-                        position INTEGER DEFAULT 0,
+                        position INT DEFAULT 0,
                         created_at TIMESTAMP NOT NULL,
-                        updated_at TIMESTAMP NOT NULL
+                        updated_at TIMESTAMP NOT NULL,
+                        FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE
                     )
                 """.trimIndent())
-                println("✅ Migración 3: Completada")
             }
         } catch (e: Exception) {
-            println("❌ Migración 3: Error - ${e.message}")
+            // Silenciar error
         }
     }
     
     private fun migration4_CreateCardsTable() {
         try {
             transaction {
-                println("📝 Migración 4: Creando tabla cards...")
                 exec("""
                     CREATE TABLE cards (
-                        id SERIAL PRIMARY KEY,
-                        column_id INTEGER NOT NULL REFERENCES columns(id) ON DELETE CASCADE,
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        column_id INT NOT NULL,
                         title VARCHAR(255) NOT NULL,
                         description TEXT,
                         cover_image_url VARCHAR(500),
-                        position INTEGER DEFAULT 0,
-                        task_id INTEGER REFERENCES tasks(id) ON DELETE SET NULL,
+                        position INT DEFAULT 0,
+                        task_id INT,
                         created_at TIMESTAMP NOT NULL,
-                        updated_at TIMESTAMP NOT NULL
+                        updated_at TIMESTAMP NOT NULL,
+                        FOREIGN KEY (column_id) REFERENCES columns(id) ON DELETE CASCADE,
+                        FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE SET NULL
                     )
                 """.trimIndent())
-                println("✅ Migración 4: Completada")
             }
         } catch (e: Exception) {
-            println("❌ Migración 4: Error - ${e.message}")
+            // Silenciar error
         }
     }
     
     private fun migration5_CreateCardChecklistsTable() {
         try {
             transaction {
-                println("📝 Migración 5: Creando tabla card_checklists...")
                 exec("""
                     CREATE TABLE card_checklists (
-                        id SERIAL PRIMARY KEY,
-                        card_id INTEGER NOT NULL REFERENCES cards(id) ON DELETE CASCADE,
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        card_id INT NOT NULL,
                         title VARCHAR(255) NOT NULL,
-                        created_at TIMESTAMP NOT NULL
+                        created_at TIMESTAMP NOT NULL,
+                        FOREIGN KEY (card_id) REFERENCES cards(id) ON DELETE CASCADE
                     )
                 """.trimIndent())
-                println("✅ Migración 5: Completada")
             }
         } catch (e: Exception) {
-            println("❌ Migración 5: Error - ${e.message}")
+            // Silenciar error
         }
     }
     
     private fun migration6_CreateChecklistItemsTable() {
         try {
             transaction {
-                println("📝 Migración 6: Creando tabla checklist_items...")
                 exec("""
                     CREATE TABLE checklist_items (
-                        id SERIAL PRIMARY KEY,
-                        checklist_id INTEGER NOT NULL REFERENCES card_checklists(id) ON DELETE CASCADE,
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        checklist_id INT NOT NULL,
                         title VARCHAR(255) NOT NULL,
                         is_completed BOOLEAN DEFAULT FALSE,
-                        position INTEGER DEFAULT 0,
-                        created_at TIMESTAMP NOT NULL
+                        position INT DEFAULT 0,
+                        created_at TIMESTAMP NOT NULL,
+                        FOREIGN KEY (checklist_id) REFERENCES card_checklists(id) ON DELETE CASCADE
                     )
                 """.trimIndent())
-                println("✅ Migración 6: Completada")
             }
         } catch (e: Exception) {
-            println("❌ Migración 6: Error - ${e.message}")
+            // Silenciar error
         }
     }
     
     private fun migration7_CreateCardAttachmentsTable() {
         try {
             transaction {
-                println("📝 Migración 7: Creando tabla card_attachments...")
                 exec("""
                     CREATE TABLE card_attachments (
-                        id SERIAL PRIMARY KEY,
-                        card_id INTEGER NOT NULL REFERENCES cards(id) ON DELETE CASCADE,
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        card_id INT NOT NULL,
                         file_url VARCHAR(500) NOT NULL,
                         file_name VARCHAR(255) NOT NULL,
                         file_type VARCHAR(50) NOT NULL,
-                        created_at TIMESTAMP NOT NULL
+                        created_at TIMESTAMP NOT NULL,
+                        FOREIGN KEY (card_id) REFERENCES cards(id) ON DELETE CASCADE
                     )
                 """.trimIndent())
-                println("✅ Migración 7: Completada")
             }
         } catch (e: Exception) {
-            println("❌ Migración 7: Error - ${e.message}")
+            // Silenciar error
         }
     }
 }
