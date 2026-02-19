@@ -20,6 +20,73 @@ fun Route.kanbanRoutes(
     
     authenticate("jwt") {
         
+        // BOARDS - Endpoints anidados
+        route("/api/boards/{boardId}") {
+            get("/columns") {
+                try {
+                    val boardId = call.parameters["boardId"]?.toIntOrNull()
+                    if (boardId == null) {
+                        call.respond(HttpStatusCode.BadRequest, ApiResponse<Unit>(success = false, message = "ID de tablero inválido"))
+                        return@get
+                    }
+                    
+                    val columns = columnService.getColumnsByBoardId(boardId)
+                    call.respond(HttpStatusCode.OK, ApiResponse(success = true, message = "Columnas obtenidas", data = columns))
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.InternalServerError, ApiResponse<Unit>(success = false, message = "Error: ${e.message}"))
+                }
+            }
+        }
+        
+        route("/api/columns/{columnId}") {
+            get("/cards") {
+                try {
+                    val columnId = call.parameters["columnId"]?.toIntOrNull()
+                    if (columnId == null) {
+                        call.respond(HttpStatusCode.BadRequest, ApiResponse<Unit>(success = false, message = "ID de columna inválido"))
+                        return@get
+                    }
+                    
+                    val cards = cardService.getCardsByColumnId(columnId)
+                    call.respond(HttpStatusCode.OK, ApiResponse(success = true, message = "Tarjetas obtenidas", data = cards))
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.InternalServerError, ApiResponse<Unit>(success = false, message = "Error: ${e.message}"))
+                }
+            }
+        }
+        
+        route("/api/cards/{cardId}") {
+            get("/checklists") {
+                try {
+                    val cardId = call.parameters["cardId"]?.toIntOrNull()
+                    if (cardId == null) {
+                        call.respond(HttpStatusCode.BadRequest, ApiResponse<Unit>(success = false, message = "ID de tarjeta inválido"))
+                        return@get
+                    }
+                    
+                    val checklists = checklistService.getChecklistsByCardId(cardId)
+                    call.respond(HttpStatusCode.OK, ApiResponse(success = true, message = "Checklists obtenidos", data = checklists))
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.InternalServerError, ApiResponse<Unit>(success = false, message = "Error: ${e.message}"))
+                }
+            }
+            
+            get("/attachments") {
+                try {
+                    val cardId = call.parameters["cardId"]?.toIntOrNull()
+                    if (cardId == null) {
+                        call.respond(HttpStatusCode.BadRequest, ApiResponse<Unit>(success = false, message = "ID de tarjeta inválido"))
+                        return@get
+                    }
+                    
+                    val attachments = attachmentService.getAttachmentsByCardId(cardId)
+                    call.respond(HttpStatusCode.OK, ApiResponse(success = true, message = "Archivos obtenidos", data = attachments))
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.InternalServerError, ApiResponse<Unit>(success = false, message = "Error: ${e.message}"))
+                }
+            }
+        }
+        
         // COLUMNS
         route("/api/columns") {
             post {
