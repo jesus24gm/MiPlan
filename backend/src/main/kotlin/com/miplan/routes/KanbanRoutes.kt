@@ -30,7 +30,7 @@ fun Route.kanbanRoutes(
                         return@get
                     }
                     
-                    val columns = columnService.getColumnsByBoardId(boardId)
+                    val columns = columnService.getColumnsWithCardsByBoardId(boardId)
                     call.respond(HttpStatusCode.OK, ApiResponse(success = true, message = "Columnas obtenidas", data = columns))
                 } catch (e: Exception) {
                     call.respond(HttpStatusCode.InternalServerError, ApiResponse<Unit>(success = false, message = "Error: ${e.message}"))

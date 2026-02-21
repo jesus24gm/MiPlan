@@ -5,14 +5,17 @@ import com.miplan.models.requests.CreateColumnRequest
 import com.miplan.models.requests.MoveColumnRequest
 import com.miplan.models.requests.UpdateColumnRequest
 import com.miplan.models.responses.ColumnResponse
+import com.miplan.models.responses.ColumnWithCardsResponse
 import com.miplan.repositories.ColumnRepository
+import com.miplan.repositories.CardRepository
 import java.time.format.DateTimeFormatter
 
 /**
  * Servicio para lógica de negocio de columnas
  */
 class ColumnService(
-    private val columnRepository: ColumnRepository
+    private val columnRepository: ColumnRepository,
+    private val cardRepository: CardRepository
 ) {
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     
@@ -57,6 +60,37 @@ class ColumnService(
     suspend fun getColumnsByBoardId(boardId: Int): List<ColumnResponse> {
         val columns = columnRepository.findByBoardId(boardId)
         return columns.map { columnToResponse(it) }
+    }
+    
+    /**
+     * Obtener todas las columnas de un tablero con sus tarjetas
+     */
+    suspend fun getColumnsWithCardsByBoardId(boardId: Int): List<ColumnWithCardsResponse> {
+        val columns = columnRepository.findByBoardId(boardId)
+        return columns.map { column ->
+            val cards = cardRepository.findByColumnId(column.id)
+            ColumnWithCardsResponse(
+                id = column.id,
+                boardId = column.boardId,
+                title = column.title,
+                position = column.position,
+                cards = cards.map { card ->
+                    com.miplan.models.responses.CardResponse(
+                        id = card.id,
+                        columnId = card.columnId,
+                        title = card.title,
+                        description = card.description,
+                        coverImageUrl = card.coverImageUrl,
+                        position = card.position,
+                        taskId = card.taskId,
+                        createdAt = card.createdAt.format(dateFormatter),
+                        updatedAt = card.updatedAt.format(dateFormatter)
+                    )
+                },
+                createdAt = column.createdAt.format(dateFormatter),
+                updatedAt = column.updatedAt.format(dateFormatter)
+            )
+        }
     }
     
     /**
