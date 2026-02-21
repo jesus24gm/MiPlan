@@ -23,24 +23,39 @@ class CardRepository {
         position: Int?,
         taskId: Int?
     ): Card? = dbQuery {
-        // Si no se especifica posición, obtener la siguiente
-        val nextPosition = position ?: Cards.select { Cards.columnId eq columnId }
-            .count()
-            .toInt()
-        
-        val insertStatement = Cards.insert {
-            it[Cards.columnId] = columnId
-            it[Cards.title] = title
-            it[Cards.description] = description
-            it[Cards.coverImageUrl] = coverImageUrl
-            it[Cards.position] = nextPosition
-            it[Cards.taskId] = taskId
-            it[createdAt] = LocalDateTime.now()
-            it[updatedAt] = LocalDateTime.now()
+        try {
+            println("DEBUG CardRepo: Iniciando creación - columnId=$columnId, title=$title")
+            
+            // Si no se especifica posición, obtener la siguiente
+            val nextPosition = position ?: Cards.select { Cards.columnId eq columnId }
+                .count()
+                .toInt()
+            
+            println("DEBUG CardRepo: nextPosition=$nextPosition")
+            
+            val insertStatement = Cards.insert {
+                it[Cards.columnId] = columnId
+                it[Cards.title] = title
+                it[Cards.description] = description
+                it[Cards.coverImageUrl] = coverImageUrl
+                it[Cards.position] = nextPosition
+                it[Cards.taskId] = taskId
+                it[createdAt] = LocalDateTime.now()
+                it[updatedAt] = LocalDateTime.now()
+            }
+            
+            val id = insertStatement[Cards.id]
+            println("DEBUG CardRepo: Tarjeta insertada con id=$id")
+            
+            val result = findById(id)
+            println("DEBUG CardRepo: findById devolvió: ${if (result != null) "Card(id=$id)" else "null"}")
+            
+            result
+        } catch (e: Exception) {
+            println("ERROR CardRepo: ${e.message}")
+            e.printStackTrace()
+            null
         }
-        
-        val id = insertStatement[Cards.id]
-        findById(id)
     }
     
     /**

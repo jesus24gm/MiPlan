@@ -16,21 +16,36 @@ class ColumnRepository {
      * Crear una nueva columna
      */
     suspend fun create(boardId: Int, title: String, position: Int?): Column? = dbQuery {
-        // Si no se especifica posición, obtener la siguiente
-        val nextPosition = position ?: Columns.select { Columns.boardId eq boardId }
-            .count()
-            .toInt()
-        
-        val insertStatement = Columns.insert {
-            it[Columns.boardId] = boardId
-            it[Columns.title] = title
-            it[Columns.position] = nextPosition
-            it[createdAt] = LocalDateTime.now()
-            it[updatedAt] = LocalDateTime.now()
+        try {
+            println("DEBUG ColumnRepo: Iniciando creación - boardId=$boardId, title=$title, position=$position")
+            
+            // Si no se especifica posición, obtener la siguiente
+            val nextPosition = position ?: Columns.select { Columns.boardId eq boardId }
+                .count()
+                .toInt()
+            
+            println("DEBUG ColumnRepo: nextPosition=$nextPosition")
+            
+            val insertStatement = Columns.insert {
+                it[Columns.boardId] = boardId
+                it[Columns.title] = title
+                it[Columns.position] = nextPosition
+                it[createdAt] = LocalDateTime.now()
+                it[updatedAt] = LocalDateTime.now()
+            }
+            
+            val id = insertStatement[Columns.id]
+            println("DEBUG ColumnRepo: Columna insertada con id=$id")
+            
+            val result = findById(id)
+            println("DEBUG ColumnRepo: findById devolvió: ${if (result != null) "Column(id=$id)" else "null"}")
+            
+            result
+        } catch (e: Exception) {
+            println("ERROR ColumnRepo: ${e.message}")
+            e.printStackTrace()
+            null
         }
-        
-        val id = insertStatement[Columns.id]
-        findById(id)
     }
     
     /**
