@@ -190,6 +190,12 @@ fun Route.kanbanRoutes(
                 try {
                     val request = call.receive<CreateCardRequest>()
                     val card = cardService.createCard(request)
+                    
+                    if (card == null) {
+                        call.respond(HttpStatusCode.InternalServerError, ApiResponse<Unit>(success = false, message = "Error al crear tarjeta"))
+                        return@post
+                    }
+                    
                     call.respond(HttpStatusCode.Created, ApiResponse(success = true, message = "Tarjeta creada", data = card))
                 } catch (e: Exception) {
                     call.respond(HttpStatusCode.InternalServerError, ApiResponse<Unit>(success = false, message = "Error: ${e.message}"))
