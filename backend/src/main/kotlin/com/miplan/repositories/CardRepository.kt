@@ -33,6 +33,7 @@ class CardRepository {
             
             println("DEBUG CardRepo: nextPosition=$nextPosition")
             
+            val now = LocalDateTime.now()
             val insertStatement = Cards.insert {
                 it[Cards.columnId] = columnId
                 it[Cards.title] = title
@@ -40,16 +41,27 @@ class CardRepository {
                 it[Cards.coverImageUrl] = coverImageUrl
                 it[Cards.position] = nextPosition
                 it[Cards.taskId] = taskId
-                it[createdAt] = LocalDateTime.now()
-                it[updatedAt] = LocalDateTime.now()
+                it[createdAt] = now
+                it[updatedAt] = now
             }
             
             val id = insertStatement[Cards.id]
             println("DEBUG CardRepo: Tarjeta insertada con id=$id")
             
-            val result = findById(id)
-            println("DEBUG CardRepo: findById devolvió: ${if (result != null) "Card(id=$id)" else "null"}")
+            // Construir el objeto directamente en lugar de llamar a findById
+            val result = Card(
+                id = id,
+                columnId = columnId,
+                title = title,
+                description = description,
+                coverImageUrl = coverImageUrl,
+                position = nextPosition,
+                taskId = taskId,
+                createdAt = now,
+                updatedAt = now
+            )
             
+            println("DEBUG CardRepo: Card creado: $result")
             result
         } catch (e: Exception) {
             println("ERROR CardRepo: ${e.message}")

@@ -26,20 +26,29 @@ class ColumnRepository {
             
             println("DEBUG ColumnRepo: nextPosition=$nextPosition")
             
+            val now = LocalDateTime.now()
             val insertStatement = Columns.insert {
                 it[Columns.boardId] = boardId
                 it[Columns.title] = title
                 it[Columns.position] = nextPosition
-                it[createdAt] = LocalDateTime.now()
-                it[updatedAt] = LocalDateTime.now()
+                it[createdAt] = now
+                it[updatedAt] = now
             }
             
             val id = insertStatement[Columns.id]
             println("DEBUG ColumnRepo: Columna insertada con id=$id")
             
-            val result = findById(id)
-            println("DEBUG ColumnRepo: findById devolvió: ${if (result != null) "Column(id=$id)" else "null"}")
+            // Construir el objeto directamente en lugar de llamar a findById
+            val result = Column(
+                id = id,
+                boardId = boardId,
+                title = title,
+                position = nextPosition,
+                createdAt = now,
+                updatedAt = now
+            )
             
+            println("DEBUG ColumnRepo: Column creado: $result")
             result
         } catch (e: Exception) {
             println("ERROR ColumnRepo: ${e.message}")
