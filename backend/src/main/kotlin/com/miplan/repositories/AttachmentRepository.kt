@@ -21,16 +21,26 @@ class AttachmentRepository {
         fileName: String,
         fileType: String
     ): CardAttachment? = dbQuery {
+        val now = LocalDateTime.now()
         val insertStatement = CardAttachments.insert {
             it[CardAttachments.cardId] = cardId
             it[CardAttachments.fileUrl] = fileUrl
             it[CardAttachments.fileName] = fileName
             it[CardAttachments.fileType] = fileType
-            it[createdAt] = LocalDateTime.now()
+            it[createdAt] = now
         }
         
         val id = insertStatement[CardAttachments.id]
-        findById(id)
+        
+        // Construir el objeto directamente en lugar de llamar a findById
+        CardAttachment(
+            id = id,
+            cardId = cardId,
+            fileUrl = fileUrl,
+            fileName = fileName,
+            fileType = fileType,
+            createdAt = now
+        )
     }
     
     /**

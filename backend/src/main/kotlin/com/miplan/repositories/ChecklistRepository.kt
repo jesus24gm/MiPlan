@@ -20,14 +20,22 @@ class ChecklistRepository {
      * Crear un nuevo checklist
      */
     suspend fun createChecklist(cardId: Int, title: String): CardChecklist? = dbQuery {
+        val now = LocalDateTime.now()
         val insertStatement = CardChecklists.insert {
             it[CardChecklists.cardId] = cardId
             it[CardChecklists.title] = title
-            it[createdAt] = LocalDateTime.now()
+            it[createdAt] = now
         }
         
         val id = insertStatement[CardChecklists.id]
-        findChecklistById(id)
+        
+        // Construir el objeto directamente en lugar de llamar a findChecklistById
+        CardChecklist(
+            id = id,
+            cardId = cardId,
+            title = title,
+            createdAt = now
+        )
     }
     
     /**
@@ -74,16 +82,26 @@ class ChecklistRepository {
             .count()
             .toInt()
         
+        val now = LocalDateTime.now()
         val insertStatement = ChecklistItems.insert {
             it[ChecklistItems.checklistId] = checklistId
             it[ChecklistItems.title] = title
             it[isCompleted] = false
             it[ChecklistItems.position] = nextPosition
-            it[createdAt] = LocalDateTime.now()
+            it[createdAt] = now
         }
         
         val id = insertStatement[ChecklistItems.id]
-        findItemById(id)
+        
+        // Construir el objeto directamente en lugar de llamar a findItemById
+        ChecklistItem(
+            id = id,
+            checklistId = checklistId,
+            title = title,
+            isCompleted = false,
+            position = nextPosition,
+            createdAt = now
+        )
     }
     
     /**
