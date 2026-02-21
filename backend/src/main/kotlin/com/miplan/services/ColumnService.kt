@@ -20,13 +20,27 @@ class ColumnService(
      * Crear una nueva columna
      */
     suspend fun createColumn(request: CreateColumnRequest): ColumnResponse? {
-        val column = columnRepository.create(
-            boardId = request.boardId,
-            title = request.title,
-            position = request.position
-        ) ?: return null
-        
-        return columnToResponse(column)
+        try {
+            println("DEBUG: Creando columna - boardId: ${request.boardId}, title: ${request.title}, position: ${request.position}")
+            
+            val column = columnRepository.create(
+                boardId = request.boardId,
+                title = request.title,
+                position = request.position
+            )
+            
+            if (column == null) {
+                println("ERROR: columnRepository.create() devolvió null")
+                return null
+            }
+            
+            println("DEBUG: Columna creada exitosamente - id: ${column.id}")
+            return columnToResponse(column)
+        } catch (e: Exception) {
+            println("ERROR en createColumn: ${e.message}")
+            e.printStackTrace()
+            return null
+        }
     }
     
     /**

@@ -17,16 +17,30 @@ class CardService(
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     
     suspend fun createCard(request: CreateCardRequest): CardResponse? {
-        val card = cardRepository.create(
-            columnId = request.columnId,
-            title = request.title,
-            description = request.description,
-            coverImageUrl = request.coverImageUrl,
-            position = request.position,
-            taskId = request.taskId
-        ) ?: return null
-        
-        return cardToResponse(card)
+        try {
+            println("DEBUG: Creando tarjeta - columnId: ${request.columnId}, title: ${request.title}")
+            
+            val card = cardRepository.create(
+                columnId = request.columnId,
+                title = request.title,
+                description = request.description,
+                coverImageUrl = request.coverImageUrl,
+                position = request.position,
+                taskId = request.taskId
+            )
+            
+            if (card == null) {
+                println("ERROR: cardRepository.create() devolvió null")
+                return null
+            }
+            
+            println("DEBUG: Tarjeta creada exitosamente - id: ${card.id}")
+            return cardToResponse(card)
+        } catch (e: Exception) {
+            println("ERROR en createCard: ${e.message}")
+            e.printStackTrace()
+            return null
+        }
     }
     
     suspend fun getCardById(id: Int): CardResponse? {
