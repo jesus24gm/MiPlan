@@ -93,6 +93,12 @@ fun Route.kanbanRoutes(
                 try {
                     val request = call.receive<CreateColumnRequest>()
                     val column = columnService.createColumn(request)
+                    
+                    if (column == null) {
+                        call.respond(HttpStatusCode.InternalServerError, ApiResponse<Unit>(success = false, message = "Error al crear columna"))
+                        return@post
+                    }
+                    
                     call.respond(HttpStatusCode.Created, ApiResponse(success = true, message = "Columna creada", data = column))
                 } catch (e: Exception) {
                     call.respond(HttpStatusCode.InternalServerError, ApiResponse<Unit>(success = false, message = "Error: ${e.message}"))
