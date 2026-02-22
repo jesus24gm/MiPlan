@@ -195,45 +195,48 @@ class CardService(
         val task = taskRepository.findById(taskId) ?: return null
         
         // Actualizar la tarjeta con el taskId
-        val updatedCard = cardRepository.update(
+        val updated = cardRepository.update(
             id = cardId,
             title = null,
             description = null,
             coverImageUrl = null,
             position = null,
             taskId = taskId
-        ) ?: return null
+        )
         
-        return cardToResponse(updatedCard)
+        if (!updated) return null
+        
+        // Obtener la tarjeta actualizada
+        val card = cardRepository.findById(cardId) ?: return null
+        return cardToResponse(card)
     }
     
     suspend fun unlinkTaskFromCard(cardId: Int): CardResponse? {
-        val updatedCard = cardRepository.update(
+        // Actualizar la tarjeta removiendo el taskId
+        val updated = cardRepository.update(
             id = cardId,
             title = null,
             description = null,
             coverImageUrl = null,
             position = null,
             taskId = null
-        ) ?: return null
+        )
         
-        return cardToResponse(updatedCard)
+        if (!updated) return null
+        
+        // Obtener la tarjeta actualizada
+        val card = cardRepository.findById(cardId) ?: return null
+        return cardToResponse(card)
     }
     
     suspend fun createTaskFromCard(cardId: Int, request: CreateTaskFromCardRequest): CardResponse? {
         // Obtener la tarjeta
         val card = cardRepository.findById(cardId) ?: return null
         
-        // Obtener el boardId de la columna
-        val column = cardRepository.findById(cardId) ?: return null
-        // Necesitamos obtener el boardId de la columna, pero no tenemos ese método aquí
-        // Por ahora, crearemos la tarea sin boardId
-        
         // Crear la tarea
         val task = taskRepository.create(
             title = request.title,
             description = request.description,
-            status = "PENDING",
             priority = request.priority,
             dueDate = request.dueDate?.let { java.time.LocalDateTime.parse(it) },
             imageUrl = card.coverImageUrl,
