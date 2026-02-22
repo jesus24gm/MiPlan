@@ -104,7 +104,8 @@ class CardRepository {
             if (description != null) it[Cards.description] = description
             if (coverImageUrl != null) it[Cards.coverImageUrl] = coverImageUrl
             position?.let { value -> it[Cards.position] = value }
-            if (taskId != null) it[Cards.taskId] = taskId
+            // Permitir establecer taskId a null para desvincular
+            it[Cards.taskId] = taskId
             it[updatedAt] = LocalDateTime.now()
         } > 0
     }

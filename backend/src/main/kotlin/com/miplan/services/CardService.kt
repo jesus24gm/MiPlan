@@ -229,7 +229,7 @@ class CardService(
         return cardToResponse(card)
     }
     
-    suspend fun createTaskFromCard(cardId: Int, request: CreateTaskFromCardRequest): CardResponse? {
+    suspend fun createTaskFromCard(cardId: Int, request: CreateTaskFromCardRequest, userId: Int): CardResponse? {
         // Obtener la tarjeta
         val card = cardRepository.findById(cardId) ?: return null
         
@@ -240,8 +240,8 @@ class CardService(
             priority = request.priority,
             dueDate = request.dueDate?.let { java.time.LocalDateTime.parse(it) },
             imageUrl = card.coverImageUrl,
-            boardId = null, // TODO: Obtener boardId de la columna
-            createdBy = 1 // TODO: Obtener del contexto de autenticación
+            boardId = null,
+            createdBy = userId
         ) ?: return null
         
         // Vincular la tarea a la tarjeta

@@ -549,6 +549,10 @@ fun Route.kanbanRoutes(
             // Crear tarea desde tarjeta
             post("/create-task") {
                 try {
+                    val principal = call.principal<JWTPrincipal>()
+                    val userId = principal?.payload?.getClaim("userId")?.asInt()
+                        ?: throw IllegalArgumentException("Usuario no autenticado")
+                    
                     val cardId = call.parameters["cardId"]?.toIntOrNull()
                     if (cardId == null) {
                         call.respond(HttpStatusCode.BadRequest, ApiResponse<Unit>(success = false, message = "ID de tarjeta inválido"))
@@ -556,7 +560,7 @@ fun Route.kanbanRoutes(
                     }
                     
                     val request = call.receive<CreateTaskFromCardRequest>()
-                    val result = cardService.createTaskFromCard(cardId, request)
+                    val result = cardService.createTaskFromCard(cardId, request, userId)
                     
                     if (result == null) {
                         call.respond(HttpStatusCode.NotFound, ApiResponse<Unit>(success = false, message = "Tarjeta no encontrada"))
