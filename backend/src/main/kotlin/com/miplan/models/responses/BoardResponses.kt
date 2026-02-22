@@ -60,6 +60,8 @@ data class CardResponse(
     val coverImageUrl: String? = null,
     val position: Int,
     val taskId: Int? = null,
+    val checklists: List<ChecklistResponse> = emptyList(),
+    val attachments: List<AttachmentResponse> = emptyList(),
     val createdAt: String,
     val updatedAt: String
 )

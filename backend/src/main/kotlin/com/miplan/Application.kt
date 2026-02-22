@@ -54,7 +54,7 @@ fun Application.module() {
     val authService = AuthService(userRepository, emailService, jwtConfig)
     val taskService = TaskService(taskRepository)
     val boardService = BoardService(boardRepository, columnRepository, cardRepository)
-    val columnService = ColumnService(columnRepository, cardRepository)
+    val columnService = ColumnService(columnRepository, cardRepository, checklistRepository, attachmentRepository)
     val cardService = CardService(cardRepository, checklistRepository, attachmentRepository)
     val checklistService = ChecklistService(checklistRepository)
     val attachmentService = AttachmentService(attachmentRepository)

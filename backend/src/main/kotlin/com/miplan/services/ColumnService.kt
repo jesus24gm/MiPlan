@@ -8,6 +8,8 @@ import com.miplan.models.responses.ColumnResponse
 import com.miplan.models.responses.ColumnWithCardsResponse
 import com.miplan.repositories.ColumnRepository
 import com.miplan.repositories.CardRepository
+import com.miplan.repositories.ChecklistRepository
+import com.miplan.repositories.AttachmentRepository
 import java.time.format.DateTimeFormatter
 
 /**
@@ -15,7 +17,9 @@ import java.time.format.DateTimeFormatter
  */
 class ColumnService(
     private val columnRepository: ColumnRepository,
-    private val cardRepository: CardRepository
+    private val cardRepository: CardRepository,
+    private val checklistRepository: ChecklistRepository,
+    private val attachmentRepository: AttachmentRepository
 ) {
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     
@@ -75,6 +79,9 @@ class ColumnService(
                 title = column.title,
                 position = column.position,
                 cards = cards.map { card ->
+                    val checklists = checklistRepository.findByCardId(card.id)
+                    val attachments = attachmentRepository.findByCardId(card.id)
+                    
                     com.miplan.models.responses.CardResponse(
                         id = card.id,
                         columnId = card.columnId,
@@ -83,6 +90,24 @@ class ColumnService(
                         coverImageUrl = card.coverImageUrl,
                         position = card.position,
                         taskId = card.taskId,
+                        checklists = checklists.map { checklist ->
+                            com.miplan.models.responses.ChecklistResponse(
+                                id = checklist.id,
+                                cardId = checklist.cardId,
+                                title = checklist.title,
+                                createdAt = checklist.createdAt.format(dateFormatter)
+                            )
+                        },
+                        attachments = attachments.map { attachment ->
+                            com.miplan.models.responses.AttachmentResponse(
+                                id = attachment.id,
+                                cardId = attachment.cardId,
+                                fileUrl = attachment.fileUrl,
+                                fileName = attachment.fileName,
+                                fileType = attachment.fileType,
+                                createdAt = attachment.createdAt.format(dateFormatter)
+                            )
+                        },
                         createdAt = card.createdAt.format(dateFormatter),
                         updatedAt = card.updatedAt.format(dateFormatter)
                     )

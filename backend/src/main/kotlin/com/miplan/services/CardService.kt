@@ -143,7 +143,10 @@ class CardService(
         return cardToResponse(card)
     }
     
-    private fun cardToResponse(card: Card): CardResponse {
+    private suspend fun cardToResponse(card: Card): CardResponse {
+        val checklists = checklistRepository.findByCardId(card.id)
+        val attachments = attachmentRepository.findByCardId(card.id)
+        
         return CardResponse(
             id = card.id,
             columnId = card.columnId,
@@ -152,6 +155,24 @@ class CardService(
             coverImageUrl = card.coverImageUrl,
             position = card.position,
             taskId = card.taskId,
+            checklists = checklists.map { checklist ->
+                com.miplan.models.responses.ChecklistResponse(
+                    id = checklist.id,
+                    cardId = checklist.cardId,
+                    title = checklist.title,
+                    createdAt = checklist.createdAt.format(dateFormatter)
+                )
+            },
+            attachments = attachments.map { attachment ->
+                com.miplan.models.responses.AttachmentResponse(
+                    id = attachment.id,
+                    cardId = attachment.cardId,
+                    fileUrl = attachment.fileUrl,
+                    fileName = attachment.fileName,
+                    fileType = attachment.fileType,
+                    createdAt = attachment.createdAt.format(dateFormatter)
+                )
+            },
             createdAt = card.createdAt.format(dateFormatter),
             updatedAt = card.updatedAt.format(dateFormatter)
         )
