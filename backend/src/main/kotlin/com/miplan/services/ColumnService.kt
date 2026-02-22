@@ -79,7 +79,7 @@ class ColumnService(
                 title = column.title,
                 position = column.position,
                 cards = cards.map { card ->
-                    val checklists = checklistRepository.findByCardId(card.id)
+                    val checklists = checklistRepository.findChecklistsByCardId(card.id)
                     val attachments = attachmentRepository.findByCardId(card.id)
                     
                     com.miplan.models.responses.CardResponse(

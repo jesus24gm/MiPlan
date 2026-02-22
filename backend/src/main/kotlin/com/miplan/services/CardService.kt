@@ -144,7 +144,7 @@ class CardService(
     }
     
     private suspend fun cardToResponse(card: Card): CardResponse {
-        val checklists = checklistRepository.findByCardId(card.id)
+        val checklists = checklistRepository.findChecklistsByCardId(card.id)
         val attachments = attachmentRepository.findByCardId(card.id)
         
         return CardResponse(
