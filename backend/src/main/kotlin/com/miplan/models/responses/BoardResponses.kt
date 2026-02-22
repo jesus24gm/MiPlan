@@ -87,6 +87,7 @@ data class ChecklistResponse(
     val id: Int,
     val cardId: Int,
     val title: String,
+    val items: List<ChecklistItemResponse> = emptyList(),
     val createdAt: String
 )
 

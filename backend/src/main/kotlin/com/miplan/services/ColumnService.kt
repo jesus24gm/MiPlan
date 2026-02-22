@@ -91,10 +91,21 @@ class ColumnService(
                         position = card.position,
                         taskId = card.taskId,
                         checklists = checklists.map { checklist ->
+                            val items = checklistRepository.findItemsByChecklistId(checklist.id)
                             com.miplan.models.responses.ChecklistResponse(
                                 id = checklist.id,
                                 cardId = checklist.cardId,
                                 title = checklist.title,
+                                items = items.map { item ->
+                                    com.miplan.models.responses.ChecklistItemResponse(
+                                        id = item.id,
+                                        checklistId = item.checklistId,
+                                        title = item.title,
+                                        isCompleted = item.isCompleted,
+                                        position = item.position,
+                                        createdAt = item.createdAt.format(dateFormatter)
+                                    )
+                                },
                                 createdAt = checklist.createdAt.format(dateFormatter)
                             )
                         },
