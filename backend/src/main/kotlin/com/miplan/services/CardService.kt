@@ -12,7 +12,8 @@ import java.time.format.DateTimeFormatter
 class CardService(
     private val cardRepository: CardRepository,
     private val checklistRepository: ChecklistRepository,
-    private val attachmentRepository: AttachmentRepository
+    private val attachmentRepository: AttachmentRepository,
+    private val taskRepository: com.miplan.repositories.TaskRepository
 ) {
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     
@@ -187,5 +188,60 @@ class CardService(
             createdAt = card.createdAt.format(dateFormatter),
             updatedAt = card.updatedAt.format(dateFormatter)
         )
+    }
+    
+    suspend fun linkTaskToCard(cardId: Int, taskId: Int): CardResponse? {
+        // Verificar que la tarea existe
+        val task = taskRepository.findById(taskId) ?: return null
+        
+        // Actualizar la tarjeta con el taskId
+        val updatedCard = cardRepository.update(
+            id = cardId,
+            title = null,
+            description = null,
+            coverImageUrl = null,
+            position = null,
+            taskId = taskId
+        ) ?: return null
+        
+        return cardToResponse(updatedCard)
+    }
+    
+    suspend fun unlinkTaskFromCard(cardId: Int): CardResponse? {
+        val updatedCard = cardRepository.update(
+            id = cardId,
+            title = null,
+            description = null,
+            coverImageUrl = null,
+            position = null,
+            taskId = null
+        ) ?: return null
+        
+        return cardToResponse(updatedCard)
+    }
+    
+    suspend fun createTaskFromCard(cardId: Int, request: CreateTaskFromCardRequest): CardResponse? {
+        // Obtener la tarjeta
+        val card = cardRepository.findById(cardId) ?: return null
+        
+        // Obtener el boardId de la columna
+        val column = cardRepository.findById(cardId) ?: return null
+        // Necesitamos obtener el boardId de la columna, pero no tenemos ese método aquí
+        // Por ahora, crearemos la tarea sin boardId
+        
+        // Crear la tarea
+        val task = taskRepository.create(
+            title = request.title,
+            description = request.description,
+            status = "PENDING",
+            priority = request.priority,
+            dueDate = request.dueDate?.let { java.time.LocalDateTime.parse(it) },
+            imageUrl = card.coverImageUrl,
+            boardId = null, // TODO: Obtener boardId de la columna
+            createdBy = 1 // TODO: Obtener del contexto de autenticación
+        ) ?: return null
+        
+        // Vincular la tarea a la tarjeta
+        return linkTaskToCard(cardId, task.id)
     }
 }

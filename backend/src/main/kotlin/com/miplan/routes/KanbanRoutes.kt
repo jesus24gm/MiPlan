@@ -498,5 +498,76 @@ fun Route.kanbanRoutes(
                 }
             }
         }
+        
+        // CARD-TASK LINKING
+        route("/api/cards/{cardId}") {
+            // Vincular tarea existente a tarjeta
+            post("/link-task") {
+                try {
+                    val cardId = call.parameters["cardId"]?.toIntOrNull()
+                    if (cardId == null) {
+                        call.respond(HttpStatusCode.BadRequest, ApiResponse<Unit>(success = false, message = "ID de tarjeta inválido"))
+                        return@post
+                    }
+                    
+                    val request = call.receive<LinkTaskToCardRequest>()
+                    val card = cardService.linkTaskToCard(cardId, request.taskId)
+                    
+                    if (card == null) {
+                        call.respond(HttpStatusCode.NotFound, ApiResponse<Unit>(success = false, message = "Tarjeta o tarea no encontrada"))
+                        return@post
+                    }
+                    
+                    call.respond(HttpStatusCode.OK, ApiResponse(success = true, message = "Tarea vinculada", data = card))
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.InternalServerError, ApiResponse<Unit>(success = false, message = "Error: ${e.message}"))
+                }
+            }
+            
+            // Desvincular tarea de tarjeta
+            delete("/unlink-task") {
+                try {
+                    val cardId = call.parameters["cardId"]?.toIntOrNull()
+                    if (cardId == null) {
+                        call.respond(HttpStatusCode.BadRequest, ApiResponse<Unit>(success = false, message = "ID de tarjeta inválido"))
+                        return@delete
+                    }
+                    
+                    val card = cardService.unlinkTaskFromCard(cardId)
+                    
+                    if (card == null) {
+                        call.respond(HttpStatusCode.NotFound, ApiResponse<Unit>(success = false, message = "Tarjeta no encontrada"))
+                        return@delete
+                    }
+                    
+                    call.respond(HttpStatusCode.OK, ApiResponse(success = true, message = "Tarea desvinculada", data = card))
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.InternalServerError, ApiResponse<Unit>(success = false, message = "Error: ${e.message}"))
+                }
+            }
+            
+            // Crear tarea desde tarjeta
+            post("/create-task") {
+                try {
+                    val cardId = call.parameters["cardId"]?.toIntOrNull()
+                    if (cardId == null) {
+                        call.respond(HttpStatusCode.BadRequest, ApiResponse<Unit>(success = false, message = "ID de tarjeta inválido"))
+                        return@post
+                    }
+                    
+                    val request = call.receive<CreateTaskFromCardRequest>()
+                    val result = cardService.createTaskFromCard(cardId, request)
+                    
+                    if (result == null) {
+                        call.respond(HttpStatusCode.NotFound, ApiResponse<Unit>(success = false, message = "Tarjeta no encontrada"))
+                        return@post
+                    }
+                    
+                    call.respond(HttpStatusCode.Created, ApiResponse(success = true, message = "Tarea creada y vinculada", data = result))
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.InternalServerError, ApiResponse<Unit>(success = false, message = "Error: ${e.message}"))
+                }
+            }
+        }
     }
 }

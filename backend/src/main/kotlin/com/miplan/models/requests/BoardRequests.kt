@@ -104,3 +104,17 @@ data class CreateAttachmentRequest(
     val fileName: String,
     val fileType: String
 )
+
+// ==================== CARD-TASK LINK REQUESTS ====================
+@Serializable
+data class LinkTaskToCardRequest(
+    val taskId: Int
+)
+
+@Serializable
+data class CreateTaskFromCardRequest(
+    val title: String,
+    val description: String? = null,
+    val priority: String = "MEDIUM",
+    val dueDate: String? = null
+)
