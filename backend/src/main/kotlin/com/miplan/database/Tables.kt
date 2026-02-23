@@ -61,6 +61,7 @@ object Cards : Table("cards") {
     val coverImageUrl = varchar("cover_image_url", 500).nullable()
     val position = integer("position").default(0)
     val taskId = integer("task_id").references(Tasks.id).nullable()
+    val dueDate = datetime("due_date").nullable()
     val createdAt = datetime("created_at")
     val updatedAt = datetime("updated_at")
     

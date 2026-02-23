@@ -38,6 +38,9 @@ object Migrations {
         // Migración 7: Crear tabla card_attachments
         migration7_CreateCardAttachmentsTable()
         
+        // Migración 8: Agregar due_date a cards
+        migration8_AddDueDateToCards()
+        
         println("✅ Proceso de migraciones completado")
     }
     
@@ -205,6 +208,31 @@ object Migrations {
             }
         } catch (e: Exception) {
             // Silenciar error
+        }
+    }
+    
+    private fun migration8_AddDueDateToCards() {
+        try {
+            transaction {
+                val checkQuery = """
+                    SELECT column_name 
+                    FROM information_schema.columns 
+                    WHERE table_name = 'cards' 
+                    AND column_name = 'due_date'
+                """.trimIndent()
+                
+                val exists = exec(checkQuery) { rs -> rs.next() } ?: false
+                
+                if (!exists) {
+                    println("📝 Migración 8: Agregando columna due_date a cards...")
+                    exec("ALTER TABLE cards ADD COLUMN due_date TIMESTAMP NULL")
+                    println("✅ Migración 8: Completada")
+                } else {
+                    println("ℹ️ Migración 8: Ya aplicada")
+                }
+            }
+        } catch (e: Exception) {
+            println("❌ Migración 8: Error - ${e.message}")
         }
     }
 }

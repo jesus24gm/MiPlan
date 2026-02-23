@@ -23,6 +23,7 @@ data class Card(
     val coverImageUrl: String?,
     val position: Int,
     val taskId: Int?,
+    val dueDate: LocalDateTime?,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
 )

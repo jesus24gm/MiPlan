@@ -45,7 +45,8 @@ data class CreateCardRequest(
     val description: String? = null,
     val coverImageUrl: String? = null,
     val position: Int? = null,
-    val taskId: Int? = null
+    val taskId: Int? = null,
+    val dueDate: String? = null
 )
 
 @Serializable
@@ -54,7 +55,8 @@ data class UpdateCardRequest(
     val description: String? = null,
     val coverImageUrl: String? = null,
     val position: Int? = null,
-    val taskId: Int? = null
+    val taskId: Int? = null,
+    val dueDate: String? = null
 )
 
 @Serializable

@@ -21,7 +21,8 @@ class CardRepository {
         description: String?,
         coverImageUrl: String?,
         position: Int?,
-        taskId: Int?
+        taskId: Int?,
+        dueDate: LocalDateTime?
     ): Card? = dbQuery {
         try {
             println("DEBUG CardRepo: Iniciando creación - columnId=$columnId, title=$title")
@@ -41,6 +42,7 @@ class CardRepository {
                 it[Cards.coverImageUrl] = coverImageUrl
                 it[Cards.position] = nextPosition
                 it[Cards.taskId] = taskId
+                it[Cards.dueDate] = dueDate
                 it[createdAt] = now
                 it[updatedAt] = now
             }
@@ -57,6 +59,7 @@ class CardRepository {
                 coverImageUrl = coverImageUrl,
                 position = nextPosition,
                 taskId = taskId,
+                dueDate = dueDate,
                 createdAt = now,
                 updatedAt = now
             )
@@ -97,7 +100,8 @@ class CardRepository {
         description: String?,
         coverImageUrl: String?,
         position: Int?,
-        taskId: Int?
+        taskId: Int?,
+        dueDate: LocalDateTime?
     ): Boolean = dbQuery {
         Cards.update({ Cards.id eq id }) {
             title?.let { value -> it[Cards.title] = value }
@@ -106,6 +110,7 @@ class CardRepository {
             position?.let { value -> it[Cards.position] = value }
             // Permitir establecer taskId a null para desvincular
             it[Cards.taskId] = taskId
+            it[Cards.dueDate] = dueDate
             it[updatedAt] = LocalDateTime.now()
         } > 0
     }
@@ -149,7 +154,8 @@ class CardRepository {
             description = originalCard.description,
             coverImageUrl = originalCard.coverImageUrl,
             position = nextPosition,
-            taskId = originalCard.taskId
+            taskId = originalCard.taskId,
+            dueDate = originalCard.dueDate
         )
     }
     
@@ -165,6 +171,7 @@ class CardRepository {
             coverImageUrl = row[Cards.coverImageUrl],
             position = row[Cards.position],
             taskId = row[Cards.taskId],
+            dueDate = row[Cards.dueDate],
             createdAt = row[Cards.createdAt],
             updatedAt = row[Cards.updatedAt]
         )

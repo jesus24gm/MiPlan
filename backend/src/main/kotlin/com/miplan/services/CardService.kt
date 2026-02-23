@@ -27,7 +27,8 @@ class CardService(
                 description = request.description,
                 coverImageUrl = request.coverImageUrl,
                 position = request.position,
-                taskId = request.taskId
+                taskId = request.taskId,
+                dueDate = request.dueDate?.let { java.time.LocalDateTime.parse(it) }
             )
             
             if (card == null) {
@@ -113,7 +114,8 @@ class CardService(
             description = request.description,
             coverImageUrl = request.coverImageUrl,
             position = request.position,
-            taskId = request.taskId
+            taskId = request.taskId,
+            dueDate = request.dueDate?.let { java.time.LocalDateTime.parse(it) }
         )
         
         if (!updated) return null
@@ -156,6 +158,7 @@ class CardService(
             coverImageUrl = card.coverImageUrl,
             position = card.position,
             taskId = card.taskId,
+            dueDate = card.dueDate?.format(dateFormatter),
             checklists = checklists.map { checklist ->
                 val items = checklistRepository.findItemsByChecklistId(checklist.id)
                 com.miplan.models.responses.ChecklistResponse(
@@ -201,7 +204,8 @@ class CardService(
             description = null,
             coverImageUrl = null,
             position = null,
-            taskId = taskId
+            taskId = taskId,
+            dueDate = null
         )
         
         if (!updated) return null
@@ -219,7 +223,8 @@ class CardService(
             description = null,
             coverImageUrl = null,
             position = null,
-            taskId = null
+            taskId = null,
+            dueDate = null
         )
         
         if (!updated) return null
