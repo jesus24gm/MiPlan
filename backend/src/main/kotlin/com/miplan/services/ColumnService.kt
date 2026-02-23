@@ -90,6 +90,7 @@ class ColumnService(
                         coverImageUrl = card.coverImageUrl,
                         position = card.position,
                         taskId = card.taskId,
+                        dueDate = card.dueDate?.format(dateFormatter),
                         checklists = checklists.map { checklist ->
                             val items = checklistRepository.findItemsByChecklistId(checklist.id)
                             com.miplan.models.responses.ChecklistResponse(

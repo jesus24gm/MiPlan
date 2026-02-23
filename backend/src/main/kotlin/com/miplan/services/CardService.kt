@@ -28,7 +28,7 @@ class CardService(
                 coverImageUrl = request.coverImageUrl,
                 position = request.position,
                 taskId = request.taskId,
-                dueDate = request.dueDate?.let { java.time.LocalDateTime.parse(it) }
+                dueDate = request.dueDate?.takeIf { it.isNotBlank() }?.let { java.time.LocalDateTime.parse(it) }
             )
             
             if (card == null) {
@@ -115,7 +115,7 @@ class CardService(
             coverImageUrl = request.coverImageUrl,
             position = request.position,
             taskId = request.taskId,
-            dueDate = request.dueDate?.let { java.time.LocalDateTime.parse(it) }
+            dueDate = request.dueDate?.takeIf { it.isNotBlank() }?.let { java.time.LocalDateTime.parse(it) }
         )
         
         if (!updated) return null
