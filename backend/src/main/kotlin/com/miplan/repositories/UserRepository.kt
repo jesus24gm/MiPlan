@@ -95,6 +95,16 @@ class UserRepository {
     }
     
     /**
+     * Actualiza la contraseña de un usuario
+     */
+    suspend fun updatePassword(userId: Int, passwordHash: String): Boolean = dbQuery {
+        Users.update({ Users.id eq userId }) {
+            it[Users.passwordHash] = passwordHash
+            it[updatedAt] = LocalDateTime.now()
+        } > 0
+    }
+    
+    /**
      * Cambia el rol de un usuario
      */
     suspend fun updateRole(userId: Int, roleId: Int): Boolean = dbQuery {

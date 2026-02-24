@@ -52,6 +52,7 @@ fun Application.module() {
     
     // Inicializar servicios de negocio
     val authService = AuthService(userRepository, emailService, jwtConfig)
+    val userService = UserService(userRepository, taskRepository, boardRepository)
     val taskService = TaskService(taskRepository)
     val boardService = BoardService(boardRepository, columnRepository, cardRepository)
     val columnService = ColumnService(columnRepository, cardRepository, checklistRepository, attachmentRepository)
@@ -64,5 +65,5 @@ fun Application.module() {
     configureCORS()
     configureStatusPages()
     configureSecurity(jwtConfig)
-    configureRouting(authService, taskService, boardService, columnService, cardService, checklistService, attachmentService)
+    configureRouting(authService, userService, taskService, boardService, columnService, cardService, checklistService, attachmentService)
 }

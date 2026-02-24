@@ -11,6 +11,7 @@ import io.ktor.server.routing.*
  */
 fun Application.configureRouting(
     authService: AuthService,
+    userService: UserService,
     taskService: TaskService,
     boardService: BoardService,
     columnService: ColumnService,
@@ -29,6 +30,7 @@ fun Application.configureRouting(
         
         migrationRoutes()
         authRoutes(authService)
+        userRoutes(userService)
         taskRoutes(taskService)
         boardRoutes(boardService)
         kanbanRoutes(columnService, cardService, checklistService, attachmentService, boardService)
