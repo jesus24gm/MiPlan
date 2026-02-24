@@ -1,6 +1,5 @@
 package com.miplan.services
 
-import com.miplan.models.entities.TaskStatus
 import com.miplan.models.responses.UserResponse
 import com.miplan.models.responses.UserStatsResponse
 import com.miplan.repositories.BoardRepository
@@ -27,11 +26,13 @@ class UserService(
         val user = userRepository.findById(userId)
             ?: throw IllegalArgumentException("Usuario no encontrado")
         
+        val roleName = userRepository.getUserRoleName(userId) ?: "USER"
+        
         return UserResponse(
             id = user.id,
             email = user.email,
             name = user.name,
-            roleId = user.roleId,
+            role = roleName,
             isVerified = user.isVerified,
             createdAt = user.createdAt.format(dateFormatter)
         )
@@ -68,11 +69,13 @@ class UserService(
         val updatedUser = userRepository.findById(userId)
             ?: throw Exception("Error al obtener usuario actualizado")
         
+        val roleName = userRepository.getUserRoleName(userId) ?: "USER"
+        
         return UserResponse(
             id = updatedUser.id,
             email = updatedUser.email,
             name = updatedUser.name,
-            roleId = updatedUser.roleId,
+            role = roleName,
             isVerified = updatedUser.isVerified,
             createdAt = updatedUser.createdAt.format(dateFormatter)
         )
@@ -146,8 +149,8 @@ class UserService(
         
         // Calcular estadísticas de tareas
         val totalTasks = tasks.size
-        val completedTasks = tasks.count { it.status == TaskStatus.COMPLETED }
-        val pendingTasks = tasks.count { it.status == TaskStatus.PENDING }
+        val completedTasks = tasks.count { it.status == "COMPLETED" }
+        val pendingTasks = tasks.count { it.status == "PENDING" }
         
         // Obtener todos los tableros del usuario
         val boards = boardRepository.findByUserId(userId)
