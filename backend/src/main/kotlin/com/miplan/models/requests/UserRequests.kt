@@ -19,3 +19,19 @@ data class ChangePasswordRequest(
     val currentPassword: String,
     val newPassword: String
 )
+
+/**
+ * Request para actualizar el rol de un usuario (Admin)
+ */
+@Serializable
+data class UpdateUserRoleRequest(
+    val role: String
+)
+
+/**
+ * Request para activar/suspender un usuario (Admin)
+ */
+@Serializable
+data class ToggleUserStatusRequest(
+    val is_active: Boolean
+)

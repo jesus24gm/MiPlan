@@ -98,6 +98,13 @@ class BoardRepository {
     }
     
     /**
+     * Cuenta el total de tableros
+     */
+    suspend fun countBoards(): Int = dbQuery {
+        Boards.selectAll().count().toInt()
+    }
+    
+    /**
      * Convierte una fila de la base de datos a un objeto Board
      */
     private fun rowToBoard(row: ResultRow): Board {

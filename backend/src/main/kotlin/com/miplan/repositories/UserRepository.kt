@@ -84,6 +84,39 @@ class UserRepository {
     }
     
     /**
+     * Obtiene todos los usuarios con información de rol
+     */
+    suspend fun getAllUsers(): List<com.miplan.models.User> = dbQuery {
+        Users.join(Roles, JoinType.INNER, Users.roleId, Roles.id)
+            .selectAll()
+            .map { row ->
+                com.miplan.models.User(
+                    id = row[Users.id],
+                    email = row[Users.email],
+                    name = row[Users.name],
+                    role = row[Roles.name],
+                    isVerified = row[Users.isVerified],
+                    createdAt = row[Users.createdAt]
+                )
+            }
+    }
+    
+    /**
+     * Cuenta el total de usuarios
+     */
+    suspend fun countUsers(): Int = dbQuery {
+        Users.selectAll().count().toInt()
+    }
+    
+    /**
+     * Cuenta usuarios activos (últimos 30 días)
+     * Por ahora retorna el total de usuarios verificados
+     */
+    suspend fun countActiveUsers(): Int = dbQuery {
+        Users.select { Users.isVerified eq true }.count().toInt()
+    }
+    
+    /**
      * Actualiza el perfil de un usuario
      */
     suspend fun updateProfile(userId: Int, name: String, email: String): Boolean = dbQuery {
@@ -105,11 +138,35 @@ class UserRepository {
     }
     
     /**
-     * Cambia el rol de un usuario
+     * Cambia el rol de un usuario (por roleId)
      */
     suspend fun updateRole(userId: Int, roleId: Int): Boolean = dbQuery {
         Users.update({ Users.id eq userId }) {
             it[Users.roleId] = roleId
+            it[updatedAt] = LocalDateTime.now()
+        } > 0
+    }
+    
+    /**
+     * Cambia el rol de un usuario (por nombre de rol)
+     */
+    suspend fun updateRole(userId: Int, roleName: String): Boolean = dbQuery {
+        val role = Roles.select { Roles.name eq roleName }.singleOrNull()
+            ?: throw IllegalArgumentException("Rol no encontrado")
+        
+        Users.update({ Users.id eq userId }) {
+            it[Users.roleId] = role[Roles.id]
+            it[updatedAt] = LocalDateTime.now()
+        } > 0
+    }
+    
+    /**
+     * Actualiza el estado activo de un usuario
+     * Nota: Por ahora solo actualiza isVerified ya que no hay campo isActive
+     */
+    suspend fun updateStatus(userId: Int, isActive: Boolean): Boolean = dbQuery {
+        Users.update({ Users.id eq userId }) {
+            it[isVerified] = isActive
             it[updatedAt] = LocalDateTime.now()
         } > 0
     }

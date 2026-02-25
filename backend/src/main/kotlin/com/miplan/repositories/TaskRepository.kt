@@ -145,7 +145,7 @@ class TaskRepository {
     }
     
     /**
-     * Obtiene el nombre del tablero de una tarea
+     * Obtiene el nombre del tablero asociado a una tarea
      */
     suspend fun getBoardName(boardId: Int?): String? = dbQuery {
         if (boardId == null) return@dbQuery null
@@ -153,6 +153,29 @@ class TaskRepository {
         Boards.select { Boards.id eq boardId }
             .map { it[Boards.name] }
             .singleOrNull()
+    }
+    
+    /**
+     * Cuenta el total de tareas
+     */
+    suspend fun countTasks(): Int = dbQuery {
+        Tasks.selectAll().count().toInt()
+    }
+    
+    /**
+     * Cuenta las tareas completadas
+     */
+    suspend fun countCompletedTasks(): Int = dbQuery {
+        Tasks.select { Tasks.status eq "COMPLETED" }.count().toInt()
+    }
+    
+    /**
+     * Cuenta las tareas pendientes (PENDING o IN_PROGRESS)
+     */
+    suspend fun countPendingTasks(): Int = dbQuery {
+        Tasks.select { 
+            (Tasks.status eq "PENDING") or (Tasks.status eq "IN_PROGRESS")
+        }.count().toInt()
     }
     
     /**

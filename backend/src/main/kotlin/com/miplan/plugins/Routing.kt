@@ -17,7 +17,8 @@ fun Application.configureRouting(
     columnService: ColumnService,
     cardService: CardService,
     checklistService: ChecklistService,
-    attachmentService: AttachmentService
+    attachmentService: AttachmentService,
+    adminService: AdminService
 ) {
     routing {
         get("/") {
@@ -34,5 +35,6 @@ fun Application.configureRouting(
         taskRoutes(taskService)
         boardRoutes(boardService)
         kanbanRoutes(columnService, cardService, checklistService, attachmentService, boardService)
+        adminRoutes(adminService)
     }
 }

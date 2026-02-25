@@ -59,11 +59,12 @@ fun Application.module() {
     val cardService = CardService(cardRepository, checklistRepository, attachmentRepository, taskRepository)
     val checklistService = ChecklistService(checklistRepository)
     val attachmentService = AttachmentService(attachmentRepository)
+    val adminService = AdminService(userRepository, taskRepository, boardRepository)
     
     // Configurar plugins
     configureSerialization()
     configureCORS()
     configureStatusPages()
     configureSecurity(jwtConfig)
-    configureRouting(authService, userService, taskService, boardService, columnService, cardService, checklistService, attachmentService)
+    configureRouting(authService, userService, taskService, boardService, columnService, cardService, checklistService, attachmentService, adminService)
 }
