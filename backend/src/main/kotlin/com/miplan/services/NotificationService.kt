@@ -1,8 +1,6 @@
 package com.miplan.services
 
-import com.miplan.database.Notifications
 import com.miplan.repositories.NotificationRepository
-import org.jetbrains.exposed.sql.transactions.transaction
 
 /**
  * Servicio para gestión de notificaciones
@@ -16,13 +14,13 @@ class NotificationService(
      */
     suspend fun createNotification(
         userId: Int,
-        title: String,
+        taskId: Int?,
         message: String,
         type: String = "INFO"
     ) {
-        notificationRepository.createNotification(
+        notificationRepository.create(
             userId = userId,
-            title = title,
+            taskId = taskId,
             message = message,
             type = type
         )
@@ -33,12 +31,13 @@ class NotificationService(
      */
     suspend fun notifyTaskShared(
         userId: Int,
+        taskId: Int,
         taskTitle: String,
         sharedByName: String
     ) {
         createNotification(
             userId = userId,
-            title = "Tarea compartida",
+            taskId = taskId,
             message = "$sharedByName te ha compartido la tarea: $taskTitle",
             type = "TASK_SHARED"
         )
