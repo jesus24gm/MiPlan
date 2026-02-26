@@ -23,6 +23,7 @@ object Users : Table("users") {
     val roleId = integer("role_id").references(Roles.id)
     val isVerified = bool("is_verified").default(false)
     val verificationToken = varchar("verification_token", 255).nullable()
+    val avatarUrl = varchar("avatar_url", 500).nullable()
     val createdAt = datetime("created_at")
     val updatedAt = datetime("updated_at")
     

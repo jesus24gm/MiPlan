@@ -41,6 +41,9 @@ object Migrations {
         // Migración 8: Agregar due_date a cards
         migration8_AddDueDateToCards()
         
+        // Migración 9: Agregar avatar_url a users
+        migration9_AddAvatarUrlToUsers()
+        
         println("✅ Proceso de migraciones completado")
     }
     
@@ -233,6 +236,31 @@ object Migrations {
             }
         } catch (e: Exception) {
             println("❌ Migración 8: Error - ${e.message}")
+        }
+    }
+    
+    private fun migration9_AddAvatarUrlToUsers() {
+        try {
+            transaction {
+                val checkQuery = """
+                    SELECT column_name 
+                    FROM information_schema.columns 
+                    WHERE table_name = 'users' 
+                    AND column_name = 'avatar_url'
+                """.trimIndent()
+                
+                val exists = exec(checkQuery) { rs -> rs.next() } ?: false
+                
+                if (!exists) {
+                    println("📝 Migración 9: Agregando columna avatar_url a users...")
+                    exec("ALTER TABLE users ADD COLUMN avatar_url VARCHAR(500)")
+                    println("✅ Migración 9: Completada")
+                } else {
+                    println("ℹ️ Migración 9: Ya aplicada")
+                }
+            }
+        } catch (e: Exception) {
+            println("❌ Migración 9: Error - ${e.message}")
         }
     }
 }

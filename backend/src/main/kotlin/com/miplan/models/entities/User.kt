@@ -13,6 +13,7 @@ data class User(
     val roleId: Int,
     val isVerified: Boolean,
     val verificationToken: String?,
+    val avatarUrl: String?,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime
 )

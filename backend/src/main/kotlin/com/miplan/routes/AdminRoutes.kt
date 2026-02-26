@@ -155,6 +155,52 @@ fun Route.adminRoutes(adminService: AdminService) {
                     call.respond(HttpStatusCode.InternalServerError, errorResponse("Error interno del servidor"))
                 }
             }
+            
+            // DELETE /api/admin/users/:userId - Eliminar usuario
+            delete("/{userId}") {
+                try {
+                    val currentUserId = call.principal<JWTPrincipal>()
+                        ?.payload
+                        ?.getClaim("userId")
+                        ?.asInt() ?: throw IllegalArgumentException("Usuario no autenticado")
+                    
+                    val userRole = call.principal<JWTPrincipal>()
+                        ?.payload
+                        ?.getClaim("role")
+                        ?.asString() ?: "USER"
+                    
+                    if (userRole != "ADMIN") {
+                        call.respond(
+                            HttpStatusCode.Forbidden,
+                            errorResponse("Acceso denegado. Se requieren permisos de administrador.")
+                        )
+                        return@delete
+                    }
+                    
+                    val userId = call.parameters["userId"]?.toIntOrNull()
+                        ?: throw IllegalArgumentException("ID de usuario inválido")
+                    
+                    // No permitir que un admin se elimine a sí mismo
+                    if (userId == currentUserId) {
+                        call.respond(
+                            HttpStatusCode.BadRequest,
+                            errorResponse("No puedes eliminar tu propia cuenta")
+                        )
+                        return@delete
+                    }
+                    
+                    val deleted = adminService.deleteUser(userId)
+                    if (deleted) {
+                        call.respond(HttpStatusCode.OK, successResponse("Usuario eliminado exitosamente", null))
+                    } else {
+                        call.respond(HttpStatusCode.NotFound, errorResponse("Usuario no encontrado"))
+                    }
+                } catch (e: IllegalArgumentException) {
+                    call.respond(HttpStatusCode.BadRequest, errorResponse(e.message ?: "Error al eliminar usuario"))
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.InternalServerError, errorResponse("Error interno del servidor"))
+                }
+            }
         }
     }
 }

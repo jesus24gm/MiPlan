@@ -79,6 +79,16 @@ class AdminService(
         
         return updatedUser.toResponse()
     }
+    
+    /**
+     * Elimina un usuario del sistema
+     */
+    suspend fun deleteUser(userId: Int): Boolean {
+        val user = userRepository.getUserById(userId)
+            ?: throw IllegalArgumentException("Usuario no encontrado")
+        
+        return userRepository.delete(userId)
+    }
 }
 
 /**
@@ -91,6 +101,7 @@ private fun User.toResponse(): UserResponse {
         name = this.name,
         role = this.role,
         isVerified = this.isVerified,
+        avatarUrl = this.avatarUrl,
         createdAt = this.createdAt.toString()
     )
 }

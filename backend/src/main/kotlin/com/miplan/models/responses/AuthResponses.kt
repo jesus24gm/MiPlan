@@ -15,5 +15,6 @@ data class UserResponse(
     val name: String,
     val role: String,
     val isVerified: Boolean,
+    val avatarUrl: String? = null,
     val createdAt: String
 )

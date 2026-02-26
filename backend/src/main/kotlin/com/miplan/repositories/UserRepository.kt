@@ -96,6 +96,7 @@ class UserRepository {
                     name = row[Users.name],
                     role = row[Roles.name],
                     isVerified = row[Users.isVerified],
+                    avatarUrl = row[Users.avatarUrl],
                     createdAt = row[Users.createdAt]
                 )
             }
@@ -114,6 +115,7 @@ class UserRepository {
                     name = row[Users.name],
                     role = row[Roles.name],
                     isVerified = row[Users.isVerified],
+                    avatarUrl = row[Users.avatarUrl],
                     createdAt = row[Users.createdAt]
                 )
             }
@@ -220,6 +222,7 @@ class UserRepository {
             roleId = row[Users.roleId],
             isVerified = row[Users.isVerified],
             verificationToken = row[Users.verificationToken],
+            avatarUrl = row[Users.avatarUrl],
             createdAt = row[Users.createdAt],
             updatedAt = row[Users.updatedAt]
         )

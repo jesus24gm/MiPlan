@@ -11,5 +11,6 @@ data class User(
     val name: String,
     val role: String,
     val isVerified: Boolean,
+    val avatarUrl: String?,
     val createdAt: LocalDateTime
 )
