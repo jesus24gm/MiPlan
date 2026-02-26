@@ -51,6 +51,17 @@ class TaskRepository {
     }
     
     /**
+     * Obtiene una tarea por ID (síncrono para uso en servicios)
+     */
+    fun getTaskById(id: Int): Task? {
+        return org.jetbrains.exposed.sql.transactions.transaction {
+            Tasks.select { Tasks.id eq id }
+                .map(::rowToTask)
+                .singleOrNull()
+        }
+    }
+    
+    /**
      * Obtiene todas las tareas de un usuario
      */
     suspend fun findByUserId(userId: Int): List<Task> = dbQuery {
