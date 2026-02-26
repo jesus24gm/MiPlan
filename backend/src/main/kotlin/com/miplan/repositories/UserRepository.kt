@@ -102,6 +102,25 @@ class UserRepository {
     }
     
     /**
+     * Obtiene un usuario por ID con información de rol
+     */
+    suspend fun getUserById(userId: Int): com.miplan.models.User? = dbQuery {
+        Users.join(Roles, JoinType.INNER, Users.roleId, Roles.id)
+            .select { Users.id eq userId }
+            .map { row ->
+                com.miplan.models.User(
+                    id = row[Users.id],
+                    email = row[Users.email],
+                    name = row[Users.name],
+                    role = row[Roles.name],
+                    isVerified = row[Users.isVerified],
+                    createdAt = row[Users.createdAt]
+                )
+            }
+            .singleOrNull()
+    }
+    
+    /**
      * Cuenta el total de usuarios
      */
     suspend fun countUsers(): Int = dbQuery {

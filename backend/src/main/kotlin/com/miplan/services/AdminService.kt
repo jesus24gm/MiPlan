@@ -27,19 +27,21 @@ class AdminService(
     /**
      * Actualiza el rol de un usuario
      */
-    suspend fun updateUserRole(userId: Int, role: String): UserResponse = dbQuery {
+    suspend fun updateUserRole(userId: Int, role: String): UserResponse {
         // Validar que el rol sea válido
         if (role != "USER" && role != "ADMIN") {
             throw IllegalArgumentException("Rol inválido. Debe ser USER o ADMIN")
         }
         
-        val user = userRepository.findById(userId)
+        val user = userRepository.getUserById(userId)
             ?: throw IllegalArgumentException("Usuario no encontrado")
         
         userRepository.updateRole(userId, role)
         
-        userRepository.findById(userId)?.toResponse()
+        val updatedUser = userRepository.getUserById(userId)
             ?: throw IllegalArgumentException("Error al actualizar rol")
+        
+        return updatedUser.toResponse()
     }
     
     /**
@@ -66,14 +68,16 @@ class AdminService(
     /**
      * Activa o suspende una cuenta de usuario
      */
-    suspend fun toggleUserStatus(userId: Int, isActive: Boolean): UserResponse = dbQuery {
-        val user = userRepository.findById(userId)
+    suspend fun toggleUserStatus(userId: Int, isActive: Boolean): UserResponse {
+        val user = userRepository.getUserById(userId)
             ?: throw IllegalArgumentException("Usuario no encontrado")
         
         userRepository.updateStatus(userId, isActive)
         
-        userRepository.findById(userId)?.toResponse()
+        val updatedUser = userRepository.getUserById(userId)
             ?: throw IllegalArgumentException("Error al actualizar estado")
+        
+        return updatedUser.toResponse()
     }
 }
 

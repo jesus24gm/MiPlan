@@ -16,19 +16,6 @@ data class UserStatsResponse(
 )
 
 /**
- * Response con información básica del usuario
- */
-@Serializable
-data class UserResponse(
-    val id: Int,
-    val email: String,
-    val name: String,
-    val role: String,
-    val isVerified: Boolean,
-    val createdAt: String
-)
-
-/**
  * Response con estadísticas del sistema (Admin)
  */
 @Serializable
