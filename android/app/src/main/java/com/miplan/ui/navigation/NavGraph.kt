@@ -13,6 +13,8 @@ import androidx.navigation.navArgument
 import com.miplan.ui.screens.auth.LoginScreen
 import com.miplan.ui.screens.auth.RegisterScreen
 import com.miplan.ui.screens.home.HomeScreen
+import com.miplan.ui.screens.tasks.TaskListScreen
+import com.miplan.ui.screens.settings.NotificationSettingsScreen
 import com.miplan.viewmodel.AuthViewModel
 
 /**
@@ -91,7 +93,11 @@ fun NavGraph(
         
         // ==================== TASKS ====================
         composable(Screen.TaskList.route) {
-            // TaskListScreen - Se implementará después
+            TaskListScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
         
         composable(
@@ -125,6 +131,20 @@ fun NavGraph(
         // ==================== NOTIFICATIONS ====================
         composable(Screen.Notifications.route) {
             // NotificationListScreen - Se implementará después
+            // Por ahora, redirigir a configuración de notificaciones
+            NotificationSettingsScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        
+        composable(Screen.NotificationSettings.route) {
+            NotificationSettingsScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
         
         // ==================== PROFILE ====================

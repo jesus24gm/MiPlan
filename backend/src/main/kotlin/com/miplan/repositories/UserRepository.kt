@@ -47,6 +47,17 @@ class UserRepository {
     }
     
     /**
+     * Busca un usuario por email (versión síncrona para colaboradores)
+     */
+    fun getUserByEmail(email: String): User? {
+        return org.jetbrains.exposed.sql.transactions.transaction {
+            Users.select { Users.email eq email }
+                .map(::rowToUser)
+                .singleOrNull()
+        }
+    }
+    
+    /**
      * Busca un usuario por ID
      */
     suspend fun findById(id: Int): User? = dbQuery {

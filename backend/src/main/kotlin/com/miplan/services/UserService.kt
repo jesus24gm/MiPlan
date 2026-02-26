@@ -209,4 +209,22 @@ class UserService(
             completionRate = completionRate
         )
     }
+    
+    /**
+     * Busca un usuario por email (para compartir tareas)
+     */
+    suspend fun searchUserByEmail(email: String): UserResponse? {
+        val user = userRepository.findByEmail(email) ?: return null
+        val roleName = userRepository.getUserRoleName(user.id) ?: "USER"
+        
+        return UserResponse(
+            id = user.id,
+            email = user.email,
+            name = user.name,
+            role = roleName,
+            isVerified = user.isVerified,
+            avatarUrl = user.avatarUrl,
+            createdAt = user.createdAt.format(dateFormatter)
+        )
+    }
 }

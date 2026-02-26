@@ -1,5 +1,6 @@
 package com.miplan.viewmodel
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.miplan.domain.model.Task
@@ -7,11 +8,16 @@ import com.miplan.domain.model.TaskPriority
 import com.miplan.domain.model.TaskStatus
 import com.miplan.domain.model.UiState
 import com.miplan.domain.repository.TaskRepository
+import com.miplan.notifications.NotificationHelper
+import com.miplan.notifications.NotificationPreferences
+import com.miplan.notifications.NotificationScheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 /**
@@ -19,7 +25,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class TaskViewModel @Inject constructor(
-    private val taskRepository: TaskRepository
+    private val taskRepository: TaskRepository,
+    private val application: Application
 ) : ViewModel() {
     
     private val _tasksState = MutableStateFlow<UiState<List<Task>>>(UiState.Idle)
@@ -138,11 +145,78 @@ class TaskViewModel @Inject constructor(
             val result = taskRepository.createTask(title, description, priority, dueDate, boardId)
             
             _createTaskState.value = if (result.isSuccess) {
+                val task = result.getOrNull()!!
+                
+                // Mostrar notificación de confirmación y programar notificaciones
+                showTaskCreatedNotification(task)
+                
                 loadTasks() // Recargar lista
-                UiState.Success(result.getOrNull()!!)
+                UiState.Success(task)
             } else {
                 UiState.Error(result.exceptionOrNull()?.message ?: "Error al crear tarea")
             }
+        }
+    }
+    
+    /**
+     * Muestra notificación de tarea creada y programa notificaciones futuras
+     */
+    private fun showTaskCreatedNotification(task: Task) {
+        val preferences = NotificationPreferences(application)
+        
+        // Extraer fecha y hora del dueDate
+        val (date, time) = parseDueDate(task.dueDate)
+        
+        // Mostrar notificación inmediata de confirmación
+        if (preferences.taskCreatedNotificationEnabled && preferences.notificationsEnabled) {
+            NotificationHelper.showTaskCreatedNotification(
+                application,
+                task.id,
+                task.title,
+                date,
+                time
+            )
+        }
+        
+        // Programar notificaciones futuras
+        if (date != null && preferences.notificationsEnabled) {
+            NotificationScheduler.scheduleTaskNotifications(
+                application,
+                task.id,
+                task.title,
+                date,
+                time
+            )
+        }
+    }
+    
+    /**
+     * Parsea el dueDate en formato ISO a fecha y hora separados
+     * Retorna Pair(fecha, hora) o Pair(null, null) si no hay fecha
+     */
+    private fun parseDueDate(dueDate: String?): Pair<String?, String?> {
+        if (dueDate == null) return Pair(null, null)
+        
+        return try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                val dateTime = LocalDateTime.parse(dueDate, DateTimeFormatter.ISO_DATE_TIME)
+                val date = dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                val time = dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+                Pair(date, time)
+            } else {
+                // Fallback para versiones antiguas
+                val parts = dueDate.split("T")
+                if (parts.size >= 2) {
+                    val date = parts[0]
+                    val time = parts[1].substring(0, 5) // HH:mm
+                    Pair(date, time)
+                } else {
+                    Pair(parts[0], null)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Pair(null, null)
         }
     }
     
@@ -182,6 +256,9 @@ class TaskViewModel @Inject constructor(
             val result = taskRepository.deleteTask(id)
             
             _deleteTaskState.value = if (result.isSuccess) {
+                // Cancelar notificaciones programadas
+                NotificationScheduler.cancelTaskNotifications(application, id)
+                
                 loadTasks() // Recargar lista
                 UiState.Success(Unit)
             } else {

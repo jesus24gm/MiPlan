@@ -44,6 +44,9 @@ object Migrations {
         // Migración 9: Agregar avatar_url a users
         migration9_AddAvatarUrlToUsers()
         
+        // Migración 10: Crear tabla task_collaborators
+        migration10_CreateTaskCollaboratorsTable()
+        
         println("✅ Proceso de migraciones completado")
     }
     
@@ -261,6 +264,47 @@ object Migrations {
             }
         } catch (e: Exception) {
             println("❌ Migración 9: Error - ${e.message}")
+        }
+    }
+    
+    private fun migration10_CreateTaskCollaboratorsTable() {
+        try {
+            transaction {
+                val checkQuery = """
+                    SELECT table_name 
+                    FROM information_schema.tables 
+                    WHERE table_name = 'task_collaborators'
+                """.trimIndent()
+                
+                val exists = exec(checkQuery) { rs -> rs.next() } ?: false
+                
+                if (!exists) {
+                    println("📝 Migración 10: Creando tabla task_collaborators...")
+                    exec("""
+                        CREATE TABLE task_collaborators (
+                            task_id INTEGER NOT NULL,
+                            user_id INTEGER NOT NULL,
+                            role VARCHAR(50) NOT NULL DEFAULT 'VIEWER',
+                            added_at TIMESTAMP NOT NULL,
+                            added_by INTEGER NOT NULL,
+                            PRIMARY KEY (task_id, user_id),
+                            FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE,
+                            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                            FOREIGN KEY (added_by) REFERENCES users(id)
+                        )
+                    """.trimIndent())
+                    
+                    // Crear índices para mejorar rendimiento
+                    exec("CREATE INDEX idx_task_collaborators_task_id ON task_collaborators(task_id)")
+                    exec("CREATE INDEX idx_task_collaborators_user_id ON task_collaborators(user_id)")
+                    
+                    println("✅ Migración 10: Completada")
+                } else {
+                    println("ℹ️ Migración 10: Ya aplicada")
+                }
+            }
+        } catch (e: Exception) {
+            println("❌ Migración 10: Error - ${e.message}")
         }
     }
 }

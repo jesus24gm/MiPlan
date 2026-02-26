@@ -108,6 +108,25 @@ fun Route.userRoutes(userService: UserService) {
                 }
             }
             
+            // GET /api/users/search?email=xxx - Buscar usuario por email
+            get("/search") {
+                try {
+                    val email = call.request.queryParameters["email"]
+                        ?: throw IllegalArgumentException("Email es requerido")
+                    
+                    val user = userService.searchUserByEmail(email)
+                    if (user != null) {
+                        call.respond(HttpStatusCode.OK, successResponse("Usuario encontrado", user))
+                    } else {
+                        call.respond(HttpStatusCode.NotFound, errorResponse("Usuario no encontrado"))
+                    }
+                } catch (e: IllegalArgumentException) {
+                    call.respond(HttpStatusCode.BadRequest, errorResponse(e.message ?: "Parámetros inválidos"))
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.InternalServerError, errorResponse("Error interno del servidor"))
+                }
+            }
+            
             // GET /api/users/{id} - Obtener usuario por ID
             get("/{id}") {
                 try {

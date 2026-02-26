@@ -1,6 +1,7 @@
 package com.miplan
 
 import android.app.Application
+import com.miplan.notifications.NotificationHelper
 import dagger.hilt.android.HiltAndroidApp
 
 /**
@@ -12,6 +13,8 @@ class MiPlanApp : Application() {
     
     override fun onCreate() {
         super.onCreate()
-        // Inicialización de librerías si es necesario
+        
+        // Inicializar canales de notificación
+        NotificationHelper.createNotificationChannels(this)
     }
 }

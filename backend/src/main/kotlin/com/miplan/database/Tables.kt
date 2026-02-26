@@ -136,3 +136,13 @@ object UserTasks : Table("user_tasks") {
     
     override val primaryKey = PrimaryKey(userId, taskId)
 }
+
+object TaskCollaborators : Table("task_collaborators") {
+    val taskId = integer("task_id").references(Tasks.id)
+    val userId = integer("user_id").references(Users.id)
+    val role = varchar("role", 50).default("VIEWER") // OWNER, EDITOR, VIEWER
+    val addedAt = datetime("added_at")
+    val addedBy = integer("added_by").references(Users.id)
+    
+    override val primaryKey = PrimaryKey(taskId, userId)
+}

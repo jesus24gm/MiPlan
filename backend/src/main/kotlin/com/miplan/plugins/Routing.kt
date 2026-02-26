@@ -18,11 +18,12 @@ fun Application.configureRouting(
     cardService: CardService,
     checklistService: ChecklistService,
     attachmentService: AttachmentService,
-    adminService: AdminService
+    adminService: AdminService,
+    collaboratorService: CollaboratorService
 ) {
     routing {
         get("/") {
-            call.respondText("MiPlan API v2.0.0 - Sistema Kanban")
+            call.respondText("MiPlan API v2.0.0 - Sistema Kanban con Colaboración")
         }
         
         get("/health") {
@@ -36,5 +37,6 @@ fun Application.configureRouting(
         boardRoutes(boardService)
         kanbanRoutes(columnService, cardService, checklistService, attachmentService, boardService)
         adminRoutes(adminService)
+        collaboratorRoutes(collaboratorService)
     }
 }
