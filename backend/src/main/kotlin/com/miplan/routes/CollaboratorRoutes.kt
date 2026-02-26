@@ -19,7 +19,7 @@ import io.ktor.server.routing.*
 fun Route.collaboratorRoutes(collaboratorService: CollaboratorService) {
     
     route("/api/tasks/{taskId}/collaborators") {
-        authenticate {
+        authenticate("jwt") {
             
             /**
              * GET /api/tasks/:taskId/collaborators
@@ -266,7 +266,7 @@ fun Route.collaboratorRoutes(collaboratorService: CollaboratorService) {
      * Obtiene las tareas compartidas con el usuario actual
      */
     route("/api/tasks/shared") {
-        authenticate {
+        authenticate("jwt") {
             get {
                 try {
                     val principal = call.principal<JWTPrincipal>()
