@@ -34,6 +34,7 @@ class UserService(
             name = user.name,
             role = roleName,
             isVerified = user.isVerified,
+            avatarUrl = user.avatarUrl,
             createdAt = user.createdAt.format(dateFormatter)
         )
     }
@@ -77,6 +78,38 @@ class UserService(
             name = updatedUser.name,
             role = roleName,
             isVerified = updatedUser.isVerified,
+            avatarUrl = updatedUser.avatarUrl,
+            createdAt = updatedUser.createdAt.format(dateFormatter)
+        )
+    }
+    
+    /**
+     * Actualiza el avatar del usuario
+     */
+    suspend fun updateAvatar(userId: Int, avatarUrl: String): UserResponse {
+        // Validar que el usuario existe
+        val user = userRepository.findById(userId)
+            ?: throw IllegalArgumentException("Usuario no encontrado")
+        
+        // Actualizar avatar
+        val updated = userRepository.updateAvatar(userId, avatarUrl)
+        if (!updated) {
+            throw Exception("Error al actualizar avatar")
+        }
+        
+        // Obtener usuario actualizado
+        val updatedUser = userRepository.findById(userId)
+            ?: throw Exception("Error al obtener usuario actualizado")
+        
+        val roleName = userRepository.getUserRoleName(userId) ?: "USER"
+        
+        return UserResponse(
+            id = updatedUser.id,
+            email = updatedUser.email,
+            name = updatedUser.name,
+            role = roleName,
+            isVerified = updatedUser.isVerified,
+            avatarUrl = updatedUser.avatarUrl,
             createdAt = updatedUser.createdAt.format(dateFormatter)
         )
     }

@@ -40,6 +40,25 @@ fun Route.userRoutes(userService: UserService) {
                 }
             }
             
+            // PUT /api/users/avatar - Actualizar avatar
+            put("/avatar") {
+                try {
+                    val principal = call.principal<JWTPrincipal>()
+                    val userId = principal?.payload?.getClaim("userId")?.asInt()
+                        ?: throw IllegalArgumentException("Usuario no autenticado")
+                    
+                    val request = call.receive<Map<String, String>>()
+                    val avatarUrl = request["avatarUrl"] ?: throw IllegalArgumentException("avatarUrl es requerido")
+                    
+                    val user = userService.updateAvatar(userId, avatarUrl)
+                    call.respond(HttpStatusCode.OK, successResponse("Avatar actualizado exitosamente", user))
+                } catch (e: IllegalArgumentException) {
+                    call.respond(HttpStatusCode.BadRequest, errorResponse(e.message ?: "Error al actualizar avatar"))
+                } catch (e: Exception) {
+                    call.respond(HttpStatusCode.InternalServerError, errorResponse("Error interno del servidor"))
+                }
+            }
+            
             // PUT /api/users/password - Cambiar contraseña
             put("/password") {
                 try {

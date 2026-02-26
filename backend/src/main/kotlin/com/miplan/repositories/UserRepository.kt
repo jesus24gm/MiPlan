@@ -144,7 +144,17 @@ class UserRepository {
         Users.update({ Users.id eq userId }) {
             it[Users.name] = name
             it[Users.email] = email
-            it[updatedAt] = LocalDateTime.now()
+            it[Users.updatedAt] = LocalDateTime.now()
+        } > 0
+    }
+    
+    /**
+     * Actualiza el avatar de un usuario
+     */
+    suspend fun updateAvatar(userId: Int, avatarUrl: String): Boolean = dbQuery {
+        Users.update({ Users.id eq userId }) {
+            it[Users.avatarUrl] = avatarUrl
+            it[Users.updatedAt] = LocalDateTime.now()
         } > 0
     }
     
