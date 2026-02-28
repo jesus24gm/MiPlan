@@ -142,7 +142,7 @@ object TaskCollaborators : Table("task_collaborators") {
     val userId = integer("user_id").references(Users.id)
     val role = varchar("role", 50).default("VIEWER") // OWNER, EDITOR, VIEWER
     val addedAt = datetime("added_at")
-    val addedBy = integer("added_by").references(Users.id)
+    val addedBy = integer("added_by") // No usar .references() para evitar conflicto con múltiples FKs
     
     override val primaryKey = PrimaryKey(taskId, userId)
 }
