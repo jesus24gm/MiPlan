@@ -47,6 +47,9 @@ object Migrations {
         // Migración 10: Crear tabla task_collaborators
         migration10_CreateTaskCollaboratorsTable()
         
+        // Migración 11: Recrear tabla task_collaborators con estructura correcta
+        migration11_RecreateTaskCollaboratorsTable()
+        
         println("✅ Proceso de migraciones completado")
     }
     
@@ -305,6 +308,41 @@ object Migrations {
             }
         } catch (e: Exception) {
             println("❌ Migración 10: Error - ${e.message}")
+        }
+    }
+    
+    private fun migration11_RecreateTaskCollaboratorsTable() {
+        try {
+            transaction {
+                println("📝 Migración 11: Recreando tabla task_collaborators con estructura correcta...")
+                
+                // Eliminar tabla existente
+                exec("DROP TABLE IF EXISTS task_collaborators")
+                
+                // Recrear con estructura correcta
+                exec("""
+                    CREATE TABLE task_collaborators (
+                        task_id INTEGER NOT NULL,
+                        user_id INTEGER NOT NULL,
+                        role VARCHAR(50) NOT NULL DEFAULT 'VIEWER',
+                        added_at TIMESTAMP NOT NULL,
+                        added_by INTEGER NOT NULL,
+                        PRIMARY KEY (task_id, user_id),
+                        FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE,
+                        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                        FOREIGN KEY (added_by) REFERENCES users(id) ON DELETE CASCADE
+                    )
+                """.trimIndent())
+                
+                // Crear índices para mejorar rendimiento
+                exec("CREATE INDEX idx_task_collaborators_task_id ON task_collaborators(task_id)")
+                exec("CREATE INDEX idx_task_collaborators_user_id ON task_collaborators(user_id)")
+                exec("CREATE INDEX idx_task_collaborators_added_by ON task_collaborators(added_by)")
+                
+                println("✅ Migración 11: Completada")
+            }
+        } catch (e: Exception) {
+            println("❌ Migración 11: Error - ${e.message}")
         }
     }
 }
