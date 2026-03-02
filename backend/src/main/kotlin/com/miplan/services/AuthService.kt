@@ -123,6 +123,7 @@ class AuthService(
             name = this.name,
             role = roleName,
             isVerified = this.isVerified,
+            avatarUrl = this.avatarUrl,
             createdAt = this.createdAt.format(dateFormatter)
         )
     }

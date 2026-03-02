@@ -19,7 +19,8 @@ fun Application.configureRouting(
     checklistService: ChecklistService,
     attachmentService: AttachmentService,
     adminService: AdminService,
-    collaboratorService: CollaboratorService
+    collaboratorService: CollaboratorService,
+    notificationService: NotificationService
 ) {
     routing {
         get("/") {
@@ -38,5 +39,6 @@ fun Application.configureRouting(
         kanbanRoutes(columnService, cardService, checklistService, attachmentService, boardService)
         adminRoutes(adminService)
         collaboratorRoutes(collaboratorService)
+        notificationRoutes(notificationService)
     }
 }

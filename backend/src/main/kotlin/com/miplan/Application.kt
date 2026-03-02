@@ -70,5 +70,5 @@ fun Application.module() {
     configureCORS()
     configureStatusPages()
     configureSecurity(jwtConfig)
-    configureRouting(authService, userService, taskService, boardService, columnService, cardService, checklistService, attachmentService, adminService, collaboratorService)
+    configureRouting(authService, userService, taskService, boardService, columnService, cardService, checklistService, attachmentService, adminService, collaboratorService, notificationService)
 }
