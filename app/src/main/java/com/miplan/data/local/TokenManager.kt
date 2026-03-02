@@ -31,6 +31,7 @@ class TokenManager @Inject constructor(
         private val USER_EMAIL_KEY = stringPreferencesKey("user_email")
         private val USER_NAME_KEY = stringPreferencesKey("user_name")
         private val USER_ROLE_KEY = stringPreferencesKey("user_role")
+        private val USER_AVATAR_URL_KEY = stringPreferencesKey("user_avatar_url")
         private val AUTO_LOGIN_KEY = stringPreferencesKey("auto_login")
     }
     
@@ -109,6 +110,28 @@ class TokenManager @Inject constructor(
     suspend fun getUserRole(): String? {
         return dataStore.data.map { preferences ->
             preferences[USER_ROLE_KEY]
+        }.first()
+    }
+    
+    /**
+     * Guarda el avatar URL del usuario
+     */
+    suspend fun saveAvatarUrl(avatarUrl: String?) {
+        dataStore.edit { preferences ->
+            if (avatarUrl != null) {
+                preferences[USER_AVATAR_URL_KEY] = avatarUrl
+            } else {
+                preferences.remove(USER_AVATAR_URL_KEY)
+            }
+        }
+    }
+    
+    /**
+     * Obtiene el avatar URL del usuario
+     */
+    suspend fun getAvatarUrl(): String? {
+        return dataStore.data.map { preferences ->
+            preferences[USER_AVATAR_URL_KEY]
         }.first()
     }
     

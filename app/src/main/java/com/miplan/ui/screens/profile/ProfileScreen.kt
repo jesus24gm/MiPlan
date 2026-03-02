@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.miplan.domain.model.TaskStatus
 import com.miplan.domain.model.UiState
 import com.miplan.ui.components.ImageSourceDialog
@@ -226,8 +227,12 @@ fun ProfileScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             if (user?.avatarUrl != null) {
+                                val context = LocalContext.current
                                 AsyncImage(
-                                    model = user?.avatarUrl,
+                                    model = ImageRequest.Builder(context)
+                                        .data(user?.avatarUrl)
+                                        .crossfade(true)
+                                        .build(),
                                     contentDescription = "Avatar",
                                     modifier = Modifier.fillMaxSize(),
                                     contentScale = ContentScale.Crop

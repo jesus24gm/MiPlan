@@ -938,7 +938,6 @@ private fun calculateDaysUntilDue(dueDate: String): Long {
         val now = java.time.LocalDateTime.now()
         java.time.Duration.between(now, dueDateParsed).toDays()
     } catch (e: Exception) {
-        android.util.Log.e("CardDetailSheet", "Error parsing date: $dueDate", e)
         999
     }
 }
@@ -951,7 +950,6 @@ private fun formatDueDate(dueDate: String): String {
         val formatter = java.time.format.DateTimeFormatter.ofPattern("dd MMM yyyy")
         date.format(formatter)
     } catch (e: Exception) {
-        android.util.Log.e("CardDetailSheet", "Error formatting date: $dueDate", e)
         dueDate.replace(" ", "T").substringBefore("T")
     }
 }

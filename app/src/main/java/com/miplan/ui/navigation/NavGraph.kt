@@ -33,7 +33,6 @@ import com.miplan.ui.screens.tasks.TaskListScreen
 import com.miplan.ui.screens.kanban.BoardListScreen
 import com.miplan.ui.screens.kanban.BoardDetailScreen
 import com.miplan.ui.screens.settings.NotificationSettingsScreen
-import com.miplan.ui.screens.notifications.NotificationsScreen
 import com.miplan.ui.screens.profile.ProfileScreen
 import com.miplan.ui.screens.profile.EditProfileScreen
 import com.miplan.ui.screens.profile.ChangePasswordScreen
@@ -121,7 +120,7 @@ fun NavGraph(
                     navController.navigate(Screen.Calendar.route)
                 },
                 onNavigateToNotifications = {
-                    navController.navigate(Screen.Notifications.route)
+                    navController.navigate(Screen.NotificationSettings.route)
                 },
                 onNavigateToProfile = {
                     navController.navigate(Screen.Profile.route)
@@ -335,15 +334,16 @@ fun NavGraph(
             )
         }
         
-        // ==================== NOTIFICATIONS ====================
-        composable(Screen.Notifications.route) {
-            NotificationsScreen(
+        // ==================== NOTIFICATION SETTINGS ====================
+        composable(Screen.NotificationSettings.route) {
+            val context = LocalContext.current
+            val notificationPreferences = remember { NotificationPreferences(context) }
+            
+            NotificationSettingsScreen(
                 onNavigateBack = {
                     navController.popBackStack()
                 },
-                onNavigateToTask = { taskId ->
-                    navController.navigate(Screen.TaskDetail.createRoute(taskId))
-                }
+                notificationPreferences = notificationPreferences
             )
         }
         
@@ -360,7 +360,7 @@ fun NavGraph(
                     navController.navigate(Screen.ChangePassword.route)
                 },
                 onNavigateToNotifications = {
-                    navController.navigate(Screen.Notifications.route)
+                    navController.navigate(Screen.NotificationSettings.route)
                 },
                 onLogout = {
                     navController.navigate(Screen.Login.route) {

@@ -34,9 +34,7 @@ class CloudinaryManager @Inject constructor(
                 )
                 MediaManager.init(context, config)
                 isInitialized = true
-                println("✅ Cloudinary inicializado correctamente")
             } catch (e: Exception) {
-                println("❌ Error inicializando Cloudinary: ${e.message}")
                 e.printStackTrace()
             }
         }
@@ -51,8 +49,6 @@ class CloudinaryManager @Inject constructor(
         try {
             initCloudinary()
             
-            println("📤 Subiendo imagen a Cloudinary: $uri")
-            
             MediaManager.get().upload(uri)
                 .option("folder", "miplan/tasks")
                 .option("resource_type", "image")
@@ -60,17 +56,15 @@ class CloudinaryManager @Inject constructor(
                 .option("fetch_format", "auto")
                 .callback(object : UploadCallback {
                     override fun onStart(requestId: String) {
-                        println("🔄 Subida iniciada: $requestId")
+                        // Subida iniciada
                     }
                     
                     override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {
-                        val progress = (bytes * 100 / totalBytes).toInt()
-                        println("📊 Progreso: $progress%")
+                        // Progreso de subida
                     }
                     
                     override fun onSuccess(requestId: String, resultData: Map<*, *>) {
                         val url = resultData["secure_url"] as? String
-                        println("✅ Imagen subida exitosamente: $url")
                         
                         if (url != null) {
                             continuation.resume(Result.success(url))
@@ -80,18 +74,16 @@ class CloudinaryManager @Inject constructor(
                     }
                     
                     override fun onError(requestId: String, error: ErrorInfo) {
-                        println("❌ Error subiendo imagen: ${error.description}")
                         continuation.resume(Result.failure(Exception(error.description)))
                     }
                     
                     override fun onReschedule(requestId: String, error: ErrorInfo) {
-                        println("⏰ Subida reprogramada: ${error.description}")
+                        // Subida reprogramada
                     }
                 })
                 .dispatch()
                 
         } catch (e: Exception) {
-            println("❌ Error en uploadImage: ${e.message}")
             e.printStackTrace()
             continuation.resume(Result.failure(e))
         }

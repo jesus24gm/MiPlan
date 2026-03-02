@@ -107,11 +107,9 @@ fun TaskFormScreen(
                 
                 result.onSuccess { url ->
                     imageUrl = url
-                    println("✅ Imagen subida: $url")
                 }
                 result.onFailure { error ->
                     uploadError = error.message
-                    println("❌ Error subiendo imagen: ${error.message}")
                 }
             }
         }
@@ -288,12 +286,8 @@ fun TaskFormScreen(
                                     }
                                 }
                                 
-                                // Debug: Verificar imageUrl
-                                println("🔍 DEBUG - imageUrl antes de guardar: $imageUrl")
-                                
                                 if (isEditMode) {
                                     val task = (taskDetailState as? UiState.Success<Task>)?.data
-                                    println("🔍 DEBUG - Actualizando tarea con imageUrl: $imageUrl")
                                     taskViewModel.updateTask(
                                         id = taskId!!,
                                         title = title,
@@ -305,7 +299,6 @@ fun TaskFormScreen(
                                         boardId = selectedBoardId
                                     )
                                 } else {
-                                    println("🔍 DEBUG - Creando tarea con imageUrl: $imageUrl")
                                     taskViewModel.createTask(
                                         title = title,
                                         description = description.ifBlank { null },

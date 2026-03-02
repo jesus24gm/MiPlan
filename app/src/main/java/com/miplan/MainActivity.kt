@@ -27,8 +27,6 @@ class MainActivity : ComponentActivity() {
         val taskId = intent?.getIntExtra("taskId", -1) ?: -1
         val openTaskDetail = intent?.getBooleanExtra("openTaskDetail", false) ?: false
         
-        println("📱 MainActivity onCreate - taskId: $taskId, openTaskDetail: $openTaskDetail")
-        
         setContent {
             MiPlanTheme {
                 Surface(
@@ -54,7 +52,6 @@ class MainActivity : ComponentActivity() {
         if (openTaskDetail && taskId != -1) {
             // Aquí se podría emitir un evento para navegar, pero por ahora
             // el usuario puede cerrar y volver a abrir la notificación
-            println("📱 Nueva notificación recibida para tarea: $taskId")
         }
     }
 }

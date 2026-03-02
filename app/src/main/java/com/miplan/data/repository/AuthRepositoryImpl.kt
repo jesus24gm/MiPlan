@@ -59,6 +59,9 @@ class AuthRepositoryImpl @Inject constructor(
                     role = user.role.name
                 )
                 
+                // Guardar avatarUrl si existe
+                tokenManager.saveAvatarUrl(user.avatarUrl)
+                
                 // Guardar preferencia de auto-login
                 tokenManager.setAutoLogin(rememberMe)
                 
@@ -102,7 +105,13 @@ class AuthRepositoryImpl @Inject constructor(
             val response = apiService.getCurrentUser()
             
             if (response.success && response.data != null) {
-                Result.success(response.data.toDomain())
+                val user = response.data.toDomain()
+                
+                // Si el servidor no devuelve avatarUrl, usar el guardado localmente
+                val avatarUrl = user.avatarUrl ?: tokenManager.getAvatarUrl()
+                
+                val userWithAvatar = user.copy(avatarUrl = avatarUrl)
+                Result.success(userWithAvatar)
             } else {
                 Result.failure(Exception(response.message))
             }

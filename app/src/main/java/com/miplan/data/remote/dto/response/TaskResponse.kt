@@ -28,11 +28,6 @@ data class TaskResponse(
         // Usar imageUrl o imageUrlSnake, el que tenga valor
         val finalImageUrl = imageUrl ?: imageUrlSnake
         
-        // Debug: Verificar qué valor tiene imageUrl
-        println("🔍 TaskResponse.toDomain() - imageUrl: $imageUrl")
-        println("🔍 TaskResponse.toDomain() - imageUrlSnake: $imageUrlSnake")
-        println("🔍 TaskResponse.toDomain() - finalImageUrl: $finalImageUrl")
-        
         return Task(
             id = id,
             title = title,

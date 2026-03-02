@@ -24,8 +24,17 @@ class NotificationRepositoryImpl @Inject constructor(
             } else {
                 Result.failure(Exception(response.message))
             }
+        } catch (e: io.ktor.client.plugins.ClientRequestException) {
+            // Error HTTP (4xx)
+            when (e.response.status.value) {
+                404 -> Result.failure(Exception("El endpoint de notificaciones no está disponible"))
+                else -> Result.failure(Exception("Error del servidor: ${e.response.status.description}"))
+            }
+        } catch (e: io.ktor.serialization.JsonConvertException) {
+            // Error de serialización
+            Result.failure(Exception("Error al procesar la respuesta del servidor"))
         } catch (e: Exception) {
-            Result.failure(e)
+            Result.failure(Exception("Error de conexión: ${e.message ?: "Desconocido"}"))
         }
     }
     

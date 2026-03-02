@@ -112,11 +112,6 @@ class TaskRepositoryImpl @Inject constructor(
             
             val response = apiService.createTask(request)
             
-            // Debug: Ver respuesta completa
-            println("🔍 CREATE TASK Response: $response")
-            println("🔍 CREATE TASK Response.data: ${response.data}")
-            println("🔍 CREATE TASK Response.data.imageUrl: ${response.data?.imageUrl}")
-            
             if (response.success && response.data != null) {
                 Result.success(response.data.toDomain())
             } else {

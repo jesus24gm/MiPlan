@@ -25,8 +25,6 @@ class ColumnRepositoryImpl @Inject constructor(
                 Result.failure(Exception(response.message))
             }
         } catch (e: Exception) {
-            // Log detallado del error para debugging
-            android.util.Log.e("ColumnRepository", "Error al obtener columnas: ${e.message}", e)
             Result.failure(Exception("Error al cargar columnas: ${e.message}"))
         }
     }

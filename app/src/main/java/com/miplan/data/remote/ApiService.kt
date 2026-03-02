@@ -5,6 +5,7 @@ import com.miplan.data.remote.dto.response.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -263,11 +264,29 @@ class ApiService @Inject constructor(
     // ==================== NOTIFICATIONS ====================
     
     suspend fun getNotifications(): ApiResponse<List<NotificationResponse>> {
-        return client.get("$API_PREFIX/notifications").body()
+        val response = client.get("$API_PREFIX/notifications")
+        return if (response.status.isSuccess()) {
+            response.body()
+        } else {
+            ApiResponse(
+                success = false,
+                message = "Error ${response.status.value}: ${response.status.description}",
+                data = null
+            )
+        }
     }
     
     suspend fun getUnreadNotifications(): ApiResponse<List<NotificationResponse>> {
-        return client.get("$API_PREFIX/notifications/unread").body()
+        val response = client.get("$API_PREFIX/notifications/unread")
+        return if (response.status.isSuccess()) {
+            response.body()
+        } else {
+            ApiResponse(
+                success = false,
+                message = "Error ${response.status.value}: ${response.status.description}",
+                data = null
+            )
+        }
     }
     
     suspend fun markNotificationAsRead(id: Int): ApiResponse<String> {

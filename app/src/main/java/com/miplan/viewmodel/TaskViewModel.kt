@@ -153,8 +153,6 @@ class TaskViewModel @Inject constructor(
             
             _createTaskState.value = if (result.isSuccess) {
                 val task = result.getOrNull()!!
-                println("🔔 Tarea creada exitosamente: ${task.title}, ID: ${task.id}")
-                println("🔔 DueDate: $dueDate, BoardId: $boardId")
                 
                 // SIEMPRE mostrar notificación de confirmación
                 try {
@@ -165,7 +163,6 @@ class TaskViewModel @Inject constructor(
                         
                         // Programar notificaciones si están habilitadas
                         if (notificationPreferences.taskNotificationsEnabled) {
-                            println("🔔 Programando notificaciones para: $dueDateParsed, hasTime: $hasTime")
                             notificationScheduler.scheduleTaskNotifications(
                                 taskId = task.id,
                                 dueDate = dueDateParsed,
@@ -174,15 +171,12 @@ class TaskViewModel @Inject constructor(
                         }
                         
                         // Mostrar notificación de confirmación con fecha
-                        println("🔔 Mostrando notificación de confirmación con fecha...")
                         showTaskCreatedNotification(task, dueDateParsed, hasTime, boardId)
                     } else {
                         // Mostrar notificación sin fecha
-                        println("🔔 Mostrando notificación de confirmación sin fecha...")
                         showTaskCreatedNotificationWithoutDate(task, boardId)
                     }
                 } catch (e: Exception) {
-                    println("❌ Error al mostrar notificación: ${e.message}")
                     e.printStackTrace()
                 }
                 
@@ -214,8 +208,6 @@ class TaskViewModel @Inject constructor(
             
             _updateTaskState.value = if (result.isSuccess) {
                 val task = result.getOrNull()!!
-                println("🔔 Tarea actualizada: ${task.title}, ID: ${task.id}")
-                println("🔔 Nueva DueDate: $dueDate, BoardId: $boardId")
                 
                 // Re-programar notificaciones y mostrar confirmación
                 if (status == TaskStatus.COMPLETED) {
@@ -236,10 +228,8 @@ class TaskViewModel @Inject constructor(
                         }
                         
                         // Mostrar notificación de confirmación
-                        println("🔔 Mostrando notificación de tarea actualizada con fecha...")
                         showTaskUpdatedNotification(task, dueDateParsed, hasTime, boardId)
                     } catch (e: Exception) {
-                        println("❌ Error al actualizar notificaciones: ${e.message}")
                         e.printStackTrace()
                     }
                 } else {
@@ -412,7 +402,6 @@ class TaskViewModel @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            println("❌ Error al parsear fecha '$dueDate': ${e.message}")
             // Fallback: intentar agregar hora por defecto
             LocalDateTime.parse("${dueDate}T00:00:00")
         }

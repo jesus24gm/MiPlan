@@ -42,8 +42,6 @@ class UnsplashService @Inject constructor() {
         page: Int = 1
     ): Result<List<UnsplashPhoto>> {
         return try {
-            println("🔍 Buscando en Unsplash: $query")
-            
             val response = api.searchPhotos(
                 query = query,
                 page = page,
@@ -53,15 +51,12 @@ class UnsplashService @Inject constructor() {
             
             if (response.isSuccessful && response.body() != null) {
                 val photos = response.body()!!.results
-                println("✅ Encontradas ${photos.size} fotos")
                 Result.success(photos)
             } else {
                 val error = "Error ${response.code()}: ${response.message()}"
-                println("❌ $error")
                 Result.failure(Exception(error))
             }
         } catch (e: Exception) {
-            println("❌ Error buscando en Unsplash: ${e.message}")
             e.printStackTrace()
             Result.failure(e)
         }

@@ -1,5 +1,6 @@
 package com.miplan.data.repository
 
+import com.miplan.data.local.TokenManager
 import com.miplan.data.remote.ApiService
 import com.miplan.domain.model.Role
 import com.miplan.domain.model.User
@@ -13,7 +14,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class UserRepositoryImpl @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val tokenManager: TokenManager
 ) : UserRepository {
     
     override suspend fun getAllUsers(): Result<List<User>> {
@@ -64,11 +66,15 @@ class UserRepositoryImpl @Inject constructor(
             val response = apiService.updateAvatar(avatarUrl)
             
             if (response.success && response.data != null) {
+                // Guardar avatarUrl localmente para que persista
+                tokenManager.saveAvatarUrl(response.data.avatarUrl)
+                
                 Result.success(response.data.toDomain())
             } else {
                 Result.failure(Exception(response.message))
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             Result.failure(e)
         }
     }

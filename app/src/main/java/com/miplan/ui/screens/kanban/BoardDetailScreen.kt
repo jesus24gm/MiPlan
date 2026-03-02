@@ -681,7 +681,6 @@ private fun calculateDaysUntilDue(dueDate: String): Long {
         val now = java.time.LocalDateTime.now()
         java.time.Duration.between(now, dueDateParsed).toDays()
     } catch (e: Exception) {
-        android.util.Log.e("BoardDetailScreen", "Error parsing date: $dueDate", e)
         999 // Valor por defecto para fechas inválidas
     }
 }
@@ -694,7 +693,6 @@ private fun formatDueDate(dueDate: String): String {
         val formatter = java.time.format.DateTimeFormatter.ofPattern("dd MMM")
         date.format(formatter)
     } catch (e: Exception) {
-        android.util.Log.e("BoardDetailScreen", "Error formatting date: $dueDate", e)
         dueDate.replace(" ", "T").substringBefore("T")
     }
 }

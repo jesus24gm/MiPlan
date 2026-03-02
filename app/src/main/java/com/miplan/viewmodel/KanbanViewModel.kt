@@ -132,19 +132,13 @@ class KanbanViewModel @Inject constructor(
     
     fun loadColumns(boardId: Int) {
         viewModelScope.launch {
-            android.util.Log.d("KanbanViewModel", "loadColumns: Cargando columnas para boardId=$boardId")
             _columnsState.value = UiState.Loading
             
             val result = columnRepository.getColumnsByBoard(boardId)
             
             result.onSuccess { columns ->
-                android.util.Log.d("KanbanViewModel", "loadColumns: Éxito - ${columns.size} columnas cargadas")
-                columns.forEach { col ->
-                    android.util.Log.d("KanbanViewModel", "  Columna: id=${col.id}, title=${col.title}, cards=${col.cards.size}")
-                }
                 _columnsState.value = UiState.Success(columns)
             }.onFailure { error ->
-                android.util.Log.e("KanbanViewModel", "loadColumns: Error - ${error.message}", error)
                 _columnsState.value = UiState.Error(error.message ?: "Error al cargar columnas")
             }
         }
@@ -152,16 +146,13 @@ class KanbanViewModel @Inject constructor(
     
     fun createColumn(boardId: Int, title: String) {
         viewModelScope.launch {
-            android.util.Log.d("KanbanViewModel", "createColumn: Iniciando creación - boardId=$boardId, title=$title")
             val result = columnRepository.createColumn(boardId, title)
             
             result.onSuccess { column ->
-                android.util.Log.d("KanbanViewModel", "createColumn: Éxito - columna creada: ${column.id}")
                 // Recargar columnas para mostrar la nueva columna
                 loadColumns(boardId)
             }.onFailure { error ->
                 // Solo mostrar error si realmente falló la creación
-                android.util.Log.e("KanbanViewModel", "Error al crear columna: ${error.message}", error)
                 _columnsState.value = UiState.Error(error.message ?: "Error al crear columna")
             }
         }
@@ -206,7 +197,6 @@ class KanbanViewModel @Inject constructor(
         boardId: Int
     ) {
         viewModelScope.launch {
-            android.util.Log.d("KanbanViewModel", "createCard: Iniciando creación - columnId=$columnId, title=$title, dueDate=$dueDate, taskId=$taskId, boardId=$boardId")
             // No cambiar el estado a Loading aquí para evitar parpadeo
             val result = cardRepository.createCard(
                 columnId = columnId,
@@ -217,8 +207,6 @@ class KanbanViewModel @Inject constructor(
             )
             
             result.onSuccess { card ->
-                android.util.Log.d("KanbanViewModel", "createCard: Éxito - tarjeta creada: ${card.id}")
-                
                 // Programar notificaciones si tiene fecha límite
                 if (!dueDate.isNullOrBlank() && notificationPreferences.cardNotificationsEnabled) {
                     try {
@@ -238,7 +226,6 @@ class KanbanViewModel @Inject constructor(
                 loadColumns(boardId)
             }.onFailure { error ->
                 // Solo mostrar error si realmente falló la creación
-                android.util.Log.e("KanbanViewModel", "Error al crear tarjeta: ${error.message}", error)
                 _columnsState.value = UiState.Error(error.message ?: "Error al crear tarjeta")
             }
         }

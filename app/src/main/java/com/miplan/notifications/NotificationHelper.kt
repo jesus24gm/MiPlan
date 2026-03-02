@@ -298,12 +298,9 @@ object NotificationHelper {
             with(NotificationManagerCompat.from(context)) {
                 notify(notificationId, builder.build())
             }
-            println("✅ Notificación de tarea creada mostrada: $taskTitle")
         } catch (e: SecurityException) {
-            println("❌ Error de permisos al mostrar notificación: ${e.message}")
             e.printStackTrace()
         } catch (e: Exception) {
-            println("❌ Error al mostrar notificación: ${e.message}")
             e.printStackTrace()
         }
     }
@@ -357,12 +354,9 @@ object NotificationHelper {
             with(NotificationManagerCompat.from(context)) {
                 notify(notificationId, builder.build())
             }
-            println("✅ Notificación de tarea sin fecha mostrada: $taskTitle")
         } catch (e: SecurityException) {
-            println("❌ Error de permisos al mostrar notificación: ${e.message}")
             e.printStackTrace()
         } catch (e: Exception) {
-            println("❌ Error al mostrar notificación: ${e.message}")
             e.printStackTrace()
         }
     }
@@ -426,12 +420,9 @@ object NotificationHelper {
             with(NotificationManagerCompat.from(context)) {
                 notify(notificationId, builder.build())
             }
-            println("✅ Notificación de tarea actualizada mostrada: $taskTitle")
         } catch (e: SecurityException) {
-            println("❌ Error de permisos al mostrar notificación: ${e.message}")
             e.printStackTrace()
         } catch (e: Exception) {
-            println("❌ Error al mostrar notificación: ${e.message}")
             e.printStackTrace()
         }
     }

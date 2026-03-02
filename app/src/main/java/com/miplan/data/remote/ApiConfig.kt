@@ -29,6 +29,9 @@ class ApiConfig @Inject constructor(
     
     fun createHttpClient(): HttpClient {
         return HttpClient(Android) {
+            // Configuración para no lanzar excepciones automáticamente
+            expectSuccess = false
+            
             // URL base y headers por defecto
             defaultRequest {
                 url(BASE_URL)
@@ -59,12 +62,8 @@ class ApiConfig @Inject constructor(
             
             // Logging
             install(Logging) {
-                logger = object : Logger {
-                    override fun log(message: String) {
-                        println("Ktor: $message")
-                    }
-                }
-                level = LogLevel.ALL // Siempre mostrar logs para debug
+                logger = Logger.DEFAULT
+                level = LogLevel.INFO
             }
             
             // Manejo de respuestas
