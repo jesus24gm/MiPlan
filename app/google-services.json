@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "511290502824",
+    "project_id": "miplan-23625",
+    "storage_bucket": "miplan-23625.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:511290502824:android:fd808f2d9c50701f7f1c9d",
+        "android_client_info": {
+          "package_name": "com.miplan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALxbhkp3AwXkM1eYL-pE_FtTyoIlsSJO4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

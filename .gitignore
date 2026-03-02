@@ -1,0 +1,49 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Build outputs
+/app/build/
+/app/release/
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Archivos temporales y backups
+*.backup
+*.bak
+*.old
+*.tmp
+*.swp
+*~
+
+# Kotlin
+.kotlin/
+/app/.kotlin/
+
+# Caches
+.gradle/
+.idea/caches/
+/app/build/
+/app/.cxx/
+/app/kspCaches/
+
+# Documentación (movida a CascadeProjects)
+*.md
+!README.md
+
+# Firebase
+google-services.json.backup

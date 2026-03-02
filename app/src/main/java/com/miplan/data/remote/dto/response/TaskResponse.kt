@@ -1,0 +1,51 @@
+package com.miplan.data.remote.dto.response
+
+import com.miplan.domain.model.Task
+import com.miplan.domain.model.TaskPriority
+import com.miplan.domain.model.TaskStatus
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class TaskResponse(
+    val id: Int,
+    val title: String,
+    val description: String? = null,
+    val status: String,
+    val priority: String,
+    val dueDate: String? = null,
+    @SerialName("imageUrl")
+    val imageUrl: String? = null,
+    @SerialName("image_url")
+    val imageUrlSnake: String? = null,
+    val boardId: Int? = null,
+    val boardName: String? = null,
+    val createdBy: Int,
+    val createdAt: String,
+    val updatedAt: String
+) {
+    fun toDomain(): Task {
+        // Usar imageUrl o imageUrlSnake, el que tenga valor
+        val finalImageUrl = imageUrl ?: imageUrlSnake
+        
+        // Debug: Verificar qué valor tiene imageUrl
+        println("🔍 TaskResponse.toDomain() - imageUrl: $imageUrl")
+        println("🔍 TaskResponse.toDomain() - imageUrlSnake: $imageUrlSnake")
+        println("🔍 TaskResponse.toDomain() - finalImageUrl: $finalImageUrl")
+        
+        return Task(
+            id = id,
+            title = title,
+            description = description,
+            status = TaskStatus.fromString(status),
+            priority = TaskPriority.fromString(priority),
+            dueDate = dueDate,
+            imageUrl = finalImageUrl,
+            boardId = boardId,
+            boardName = boardName,
+            createdBy = createdBy,
+            createdAt = createdAt,
+            updatedAt = updatedAt
+        )
+    }
+}
