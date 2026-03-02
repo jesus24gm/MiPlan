@@ -20,7 +20,15 @@ class EmailService(config: ApplicationConfig) : IEmailService {
      * Envía un email de verificación
      */
     override suspend fun sendVerificationEmail(toEmail: String, name: String, token: String) {
+        println("📧 [EmailService] Iniciando envío de email...")
+        println("📧 [EmailService] Host: $host")
+        println("📧 [EmailService] Port: $port")
+        println("📧 [EmailService] Username: $username")
+        println("📧 [EmailService] From: $from")
+        println("📧 [EmailService] To: $toEmail")
+        
         try {
+            println("📧 [EmailService] Configurando SimpleEmail...")
             val email = SimpleEmail()
             email.hostName = host
             email.setSmtpPort(port)
@@ -44,11 +52,15 @@ class EmailService(config: ApplicationConfig) : IEmailService {
             """.trimIndent())
             email.addTo(toEmail)
             
+            println("📧 [EmailService] Enviando email...")
             email.send()
-            println("Email de verificación enviado a: $toEmail")
+            println("✅ [EmailService] Email de verificación enviado exitosamente a: $toEmail")
         } catch (e: Exception) {
-            println("Error al enviar email: ${e.message}")
-            // En desarrollo, no fallar si no se puede enviar email
+            println("❌ [EmailService] Error al enviar email: ${e.message}")
+            println("❌ [EmailService] Tipo de error: ${e.javaClass.name}")
+            println("❌ [EmailService] Stack trace completo:")
+            e.printStackTrace()
+            throw e // Re-lanzar la excepción para que AuthService la capture
         }
     }
     

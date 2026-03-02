@@ -24,36 +24,52 @@ class AuthService(
      * Registra un nuevo usuario
      */
     suspend fun register(email: String, password: String, name: String): String {
+        println("🔵 [AuthService] Iniciando registro para: $email")
+        
         // Validar que el email no exista
         val existingUser = userRepository.findByEmail(email)
         if (existingUser != null) {
+            println("❌ [AuthService] Email ya registrado: $email")
             throw IllegalArgumentException("El email ya está registrado")
         }
         
         // Validar contraseña
         if (password.length < 6) {
+            println("❌ [AuthService] Contraseña muy corta")
             throw IllegalArgumentException("La contraseña debe tener al menos 6 caracteres")
         }
         
         // Hashear contraseña
         val passwordHash = PasswordHasher.hashPassword(password)
+        println("✅ [AuthService] Contraseña hasheada correctamente")
         
-        // Crear usuario con rol USER por defecto y verificado automáticamente
+        // Generar token de verificación
+        val verificationToken = java.util.UUID.randomUUID().toString()
+        println("🔑 [AuthService] Token de verificación generado: $verificationToken")
+        
+        // Crear usuario con rol USER por defecto
         val user = userRepository.create(
             email = email,
             passwordHash = passwordHash,
             name = name,
             roleId = RoleType.USER.id,
-            verificationToken = null
+            verificationToken = verificationToken
         ) ?: throw Exception("Error al crear usuario")
         
-        // Marcar como verificado inmediatamente
-        userRepository.verifyEmail(user.id)
+        println("✅ [AuthService] Usuario creado en BD con ID: ${user.id}")
         
-        // No enviar email de verificación (desactivado temporalmente)
-        // emailService.sendVerificationEmail(email, name, verificationToken)
+        // Enviar email de verificación
+        try {
+            println("📧 [AuthService] Intentando enviar email de verificación a: $email")
+            emailService.sendVerificationEmail(email, name, verificationToken)
+            println("✅ [AuthService] Email de verificación enviado exitosamente a: $email")
+        } catch (e: Exception) {
+            println("❌ [AuthService] Error al enviar email: ${e.message}")
+            println("❌ [AuthService] Stack trace: ${e.stackTraceToString()}")
+            // No fallar el registro si el email falla
+        }
         
-        return "Usuario registrado exitosamente. Ya puedes iniciar sesión."
+        return "Usuario registrado exitosamente. Revisa tu email para verificar tu cuenta."
     }
     
     /**
