@@ -398,16 +398,9 @@ fun CardDetailSheet(
             checklistTitle = "Items",
             onDismiss = { showAddItemDialog = false },
             onConfirm = { title ->
-                // Si no hay checklists, crear uno por defecto
+                // Si no hay checklists, crear uno por defecto con el item
                 if (currentCard.checklists.isEmpty()) {
-                    viewModel.createChecklist(currentCard.id, "Items", boardId)
-                    // Esperar un momento para que se cree el checklist
-                    scope.launch {
-                        kotlinx.coroutines.delay(500)
-                        currentCard.checklists.firstOrNull()?.let { checklist ->
-                            viewModel.createChecklistItem(checklist.id, title, boardId)
-                        }
-                    }
+                    viewModel.createChecklistWithItem(currentCard.id, "Items", title, boardId)
                 } else {
                     // Usar el primer checklist existente
                     viewModel.createChecklistItem(currentCard.checklists.first().id, title, boardId)

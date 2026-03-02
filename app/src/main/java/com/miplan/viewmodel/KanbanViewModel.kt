@@ -367,6 +367,27 @@ class KanbanViewModel @Inject constructor(
         }
     }
     
+    fun createChecklistWithItem(cardId: Int, checklistTitle: String, itemTitle: String, boardId: Int) {
+        viewModelScope.launch {
+            // Primero crear el checklist
+            val checklistResult = checklistRepository.createChecklist(cardId, checklistTitle)
+            
+            checklistResult.onSuccess { checklist ->
+                // Luego crear el item en el checklist recién creado
+                val itemResult = checklistRepository.createChecklistItem(checklist.id, itemTitle)
+                
+                itemResult.onSuccess {
+                    loadColumns(boardId)
+                    refreshSelectedCard(cardId)
+                }.onFailure { error ->
+                    _columnsState.value = UiState.Error(error.message ?: "Error al crear item")
+                }
+            }.onFailure { error ->
+                _columnsState.value = UiState.Error(error.message ?: "Error al crear checklist")
+            }
+        }
+    }
+    
     fun createChecklistItem(checklistId: Int, title: String, boardId: Int) {
         viewModelScope.launch {
             val result = checklistRepository.createChecklistItem(checklistId, title)
