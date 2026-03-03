@@ -121,6 +121,12 @@ dependencies {
 
     // DataStore - Preferences
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    
+    // Room - Local Database
+    val roomVersion = "2.6.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
 
     // Coil - Image Loading
     implementation("io.coil-kt:coil-compose:2.5.0")

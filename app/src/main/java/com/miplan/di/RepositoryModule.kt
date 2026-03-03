@@ -1,6 +1,10 @@
 package com.miplan.di
 
 import com.miplan.data.local.TokenManager
+import com.miplan.data.local.dao.BoardDao
+import com.miplan.data.local.dao.CardDao
+import com.miplan.data.local.dao.ColumnDao
+import com.miplan.data.local.dao.TaskDao
 import com.miplan.data.remote.ApiService
 import com.miplan.data.repository.*
 import com.miplan.domain.repository.*
@@ -29,17 +33,19 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideTaskRepository(
-        apiService: ApiService
+        apiService: ApiService,
+        taskDao: TaskDao
     ): TaskRepository {
-        return TaskRepositoryImpl(apiService)
+        return TaskRepositoryOfflineImpl(apiService, taskDao)
     }
     
     @Provides
     @Singleton
     fun provideBoardRepository(
-        apiService: ApiService
+        apiService: ApiService,
+        boardDao: BoardDao
     ): BoardRepository {
-        return BoardRepositoryImpl(apiService)
+        return BoardRepositoryOfflineImpl(apiService, boardDao)
     }
     
     @Provides
@@ -62,17 +68,22 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideColumnRepository(
-        apiService: ApiService
+        apiService: ApiService,
+        columnDao: ColumnDao,
+        boardDao: BoardDao,
+        cardDao: CardDao
     ): ColumnRepository {
-        return ColumnRepositoryImpl(apiService)
+        return ColumnRepositoryOfflineImpl(apiService, columnDao, boardDao, cardDao)
     }
     
     @Provides
     @Singleton
     fun provideCardRepository(
-        apiService: ApiService
+        apiService: ApiService,
+        cardDao: CardDao,
+        columnDao: ColumnDao
     ): CardRepository {
-        return CardRepositoryImpl(apiService)
+        return CardRepositoryOfflineImpl(apiService, cardDao, columnDao)
     }
     
     @Provides

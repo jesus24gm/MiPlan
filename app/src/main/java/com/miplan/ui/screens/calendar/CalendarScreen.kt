@@ -50,10 +50,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
@@ -79,6 +82,7 @@ fun CalendarScreen(
     val tasksState by calendarViewModel.tasksState.collectAsState()
     val selectedMonth by calendarViewModel.selectedMonth.collectAsState()
     val selectedDate by calendarViewModel.selectedDate.collectAsState()
+    val lifecycleOwner = LocalLifecycleOwner.current
     
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(100) }
@@ -91,6 +95,13 @@ fun CalendarScreen(
         firstVisibleMonth = selectedMonth,
         firstDayOfWeek = daysOfWeek.first()
     )
+    
+    // Recargar tareas cada vez que la pantalla vuelve a estar visible
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            calendarViewModel.loadTasks()
+        }
+    }
     
     // Sincronizar cambios de mes desde el ViewModel al estado del calendario
     LaunchedEffect(selectedMonth) {

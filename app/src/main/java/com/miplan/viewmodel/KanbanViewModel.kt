@@ -202,8 +202,11 @@ class KanbanViewModel @Inject constructor(
                 columnId = columnId,
                 title = title,
                 description = description,
+                position = null,
+                taskId = taskId,
                 dueDate = dueDate,
-                taskId = taskId
+                priority = null,
+                labels = null
             )
             
             result.onSuccess { card ->

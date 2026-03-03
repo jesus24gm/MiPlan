@@ -202,12 +202,6 @@ private fun BoardCard(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                
-                Text(
-                    text = "${board.taskCount} tareas",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.White.copy(alpha = 0.8f)
-                )
             }
         }
     }

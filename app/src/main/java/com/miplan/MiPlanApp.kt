@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.work.Configuration
 import androidx.work.WorkerFactory
 import com.miplan.notifications.NotificationHelper
+import com.miplan.utils.SyncManager
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
@@ -17,11 +18,17 @@ class MiPlanApp : Application(), Configuration.Provider {
     @Inject
     lateinit var workerFactory: WorkerFactory
     
+    @Inject
+    lateinit var syncManager: SyncManager
+    
     override fun onCreate() {
         super.onCreate()
         
         // Crear canales de notificación
         NotificationHelper.createNotificationChannels(this)
+        
+        // Programar sincronización periódica de datos offline
+        syncManager.schedulePeriodicSync()
     }
     
     override val workManagerConfiguration: Configuration

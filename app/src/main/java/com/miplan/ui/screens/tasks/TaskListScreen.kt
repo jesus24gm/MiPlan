@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -21,7 +22,9 @@ import com.miplan.domain.model.TaskPriority
 import com.miplan.domain.model.TaskStatus
 import com.miplan.domain.model.UiState
 import com.miplan.ui.components.SnackbarManager
+import com.miplan.utils.SyncManager
 import com.miplan.viewmodel.TaskViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -36,11 +39,14 @@ fun TaskListScreen(
     onNavigateToCreateBoard: () -> Unit = {},
     taskViewModel: TaskViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+    val syncManager = remember { SyncManager(context) }
+    
     val tasksState by taskViewModel.tasksState.collectAsState()
     val updateTaskState by taskViewModel.updateTaskState.collectAsState()
     
-    // Estado del FAB expandible (ya no se usa, se abre directamente el diálogo)
-    // var fabExpanded by remember { mutableStateOf(false) }
+    // Estado de sincronización
+    var isSyncing by remember { mutableStateOf(false) }
     
     // Snackbar
     val snackbarHostState = remember { SnackbarHostState() }
@@ -81,10 +87,53 @@ fun TaskListScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = onNavigateToCreateTask
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.End
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Crear tarea")
+                // Botón de sincronización
+                SmallFloatingActionButton(
+                    onClick = {
+                        isSyncing = true
+                        syncManager.syncNow()
+                        scope.launch {
+                            SnackbarManager.showInfo(
+                                scope = scope,
+                                snackbarHostState = snackbarHostState,
+                                message = "Sincronizando datos..."
+                            )
+                            delay(2000)
+                            isSyncing = false
+                            SnackbarManager.showSuccess(
+                                scope = scope,
+                                snackbarHostState = snackbarHostState,
+                                message = "Sincronización completada"
+                            )
+                        }
+                    },
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                ) {
+                    if (isSyncing) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            strokeWidth = 2.dp,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    } else {
+                        Icon(
+                            Icons.Default.Sync,
+                            contentDescription = "Sincronizar",
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
+                }
+                
+                // Botón de crear tarea
+                FloatingActionButton(
+                    onClick = onNavigateToCreateTask
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Crear tarea")
+                }
             }
         },
         snackbarHost = {
