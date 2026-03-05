@@ -46,14 +46,12 @@ class NotificationWorker(
             
             Result.success()
         } catch (e: Exception) {
-            e.printStackTrace()
             Result.failure()
         }
     }
     
     private suspend fun handleTaskNotification(taskId: Int, isReminder: Boolean) {
         try {
-            // Obtener la tarea del repositorio
             val task = taskRepository.getTaskById(taskId).getOrNull()
             
             // Si no existe la tarea o está completada/cancelada, no mostrar notificación
@@ -77,7 +75,6 @@ class NotificationWorker(
                 isReminder = isReminder
             )
         } catch (e: Exception) {
-            e.printStackTrace()
             // Si hay error, mostrar notificación básica
             NotificationHelper.showTaskNotification(
                 context = applicationContext,
@@ -93,7 +90,6 @@ class NotificationWorker(
     
     private suspend fun handleCardNotification(cardId: Int, isReminder: Boolean) {
         try {
-            // Obtener la tarjeta del repositorio
             val card = cardRepository.getCardById(cardId).getOrNull()
             
             // Si no existe la tarjeta, no mostrar notificación
@@ -110,11 +106,10 @@ class NotificationWorker(
                 cardId = cardId,
                 title = card.title,
                 dueDateTime = formattedDateTime,
-                boardName = null, // TODO: Obtener nombre del tablero si es necesario
+                boardName = null,
                 isReminder = isReminder
             )
         } catch (e: Exception) {
-            e.printStackTrace()
             // Si hay error, mostrar notificación básica
             NotificationHelper.showCardNotification(
                 context = applicationContext,

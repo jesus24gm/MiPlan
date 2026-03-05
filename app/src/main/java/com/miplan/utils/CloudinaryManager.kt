@@ -35,7 +35,7 @@ class CloudinaryManager @Inject constructor(
                 MediaManager.init(context, config)
                 isInitialized = true
             } catch (e: Exception) {
-                e.printStackTrace()
+                // Error al inicializar Cloudinary
             }
         }
     }
@@ -84,7 +84,6 @@ class CloudinaryManager @Inject constructor(
                 .dispatch()
                 
         } catch (e: Exception) {
-            e.printStackTrace()
             continuation.resume(Result.failure(e))
         }
     }
@@ -96,8 +95,7 @@ class CloudinaryManager @Inject constructor(
     suspend fun deleteImage(publicId: String): Result<Boolean> {
         return try {
             initCloudinary()
-            // Nota: La eliminación requiere llamada al API de Cloudinary
-            // Por simplicidad, no la implementamos ahora
+            // Funcionalidad de eliminación no implementada
             Result.success(true)
         } catch (e: Exception) {
             Result.failure(e)

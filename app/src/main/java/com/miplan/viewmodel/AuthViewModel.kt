@@ -289,11 +289,6 @@ class AuthViewModel @Inject constructor(
             _updateAvatarState.value = if (result.isSuccess) {
                 val updatedUser = result.getOrNull()
                 _currentUser.value = updatedUser
-                
-                // NOTA: No recargamos el usuario desde /api/auth/me porque ese endpoint
-                // no devuelve el avatarUrl, lo que causaría que el avatar desaparezca.
-                // El backend debe corregir /api/auth/me para incluir avatarUrl.
-                
                 UiState.Success(updatedUser!!)
             } else {
                 UiState.Error(result.exceptionOrNull()?.message ?: "Error al actualizar avatar")

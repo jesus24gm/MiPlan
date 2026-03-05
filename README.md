@@ -23,12 +23,15 @@ La documentación completa del proyecto se encuentra en:
 
 ## 📱 Características
 
-- ✅ Autenticación de usuarios
-- ✅ Gestión de tareas
-- ✅ Tableros Kanban
+- ✅ Autenticación de usuarios con JWT
+- ✅ Gestión completa de tareas (CRUD)
+- ✅ Tableros Kanban con columnas y tarjetas
 - ✅ Calendario de tareas
-- ✅ Notificaciones
-- ✅ Perfil de usuario
+- ✅ Notificaciones push con Firebase
+- ✅ Perfil de usuario con avatar
+- ✅ Modo offline con Room (sincronización automática)
+- ✅ Integración con Cloudinary y Unsplash
+- ⏳ Drag & drop (planificado para futuro)
 
 ## 🔗 Backend
 

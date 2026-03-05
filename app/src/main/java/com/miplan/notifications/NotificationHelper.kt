@@ -299,9 +299,9 @@ object NotificationHelper {
                 notify(notificationId, builder.build())
             }
         } catch (e: SecurityException) {
-            e.printStackTrace()
+            // Permisos de notificación no otorgados
         } catch (e: Exception) {
-            e.printStackTrace()
+            // Error al mostrar notificación
         }
     }
     
@@ -355,9 +355,9 @@ object NotificationHelper {
                 notify(notificationId, builder.build())
             }
         } catch (e: SecurityException) {
-            e.printStackTrace()
+            // Permisos de notificación no otorgados
         } catch (e: Exception) {
-            e.printStackTrace()
+            // Error al mostrar notificación
         }
     }
     
@@ -421,9 +421,9 @@ object NotificationHelper {
                 notify(notificationId, builder.build())
             }
         } catch (e: SecurityException) {
-            e.printStackTrace()
+            // Permisos de notificación no otorgados
         } catch (e: Exception) {
-            e.printStackTrace()
+            // Error al mostrar notificación
         }
     }
 }

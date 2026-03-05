@@ -57,7 +57,6 @@ class UnsplashService @Inject constructor() {
                 Result.failure(Exception(error))
             }
         } catch (e: Exception) {
-            e.printStackTrace()
             Result.failure(e)
         }
     }

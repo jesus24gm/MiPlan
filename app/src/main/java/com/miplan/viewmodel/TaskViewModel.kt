@@ -177,7 +177,7 @@ class TaskViewModel @Inject constructor(
                         showTaskCreatedNotificationWithoutDate(task, boardId)
                     }
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    // Error al programar notificación, continuar sin notificación
                 }
                 
                 loadTasks() // Recargar lista
@@ -230,7 +230,7 @@ class TaskViewModel @Inject constructor(
                         // Mostrar notificación de confirmación
                         showTaskUpdatedNotification(task, dueDateParsed, hasTime, boardId)
                     } catch (e: Exception) {
-                        e.printStackTrace()
+                        // Error al programar notificación, continuar sin notificación
                     }
                 } else {
                     // Si no tiene fecha, cancelar notificaciones

@@ -221,7 +221,7 @@ class KanbanViewModel @Inject constructor(
                             hasSpecificTime = hasTime
                         )
                     } catch (e: Exception) {
-                        e.printStackTrace()
+                        // Error al programar notificación, continuar sin notificación
                     }
                 }
                 
@@ -260,7 +260,7 @@ class KanbanViewModel @Inject constructor(
                             hasSpecificTime = hasTime
                         )
                     } catch (e: Exception) {
-                        e.printStackTrace()
+                        // Error al programar notificación, continuar sin notificación
                     }
                 } else {
                     // Si no tiene fecha, cancelar notificaciones

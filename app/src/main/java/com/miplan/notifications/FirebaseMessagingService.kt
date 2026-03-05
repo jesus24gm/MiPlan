@@ -32,7 +32,6 @@ class MiPlanFirebaseMessagingService : FirebaseMessagingService() {
      */
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        // TODO: Enviar token al servidor para poder enviar notificaciones push
         sendTokenToServer(token)
     }
 

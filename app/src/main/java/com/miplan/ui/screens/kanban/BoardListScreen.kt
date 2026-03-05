@@ -39,9 +39,13 @@ fun BoardListScreen(
 ) {
     val boardsState by viewModel.boardsState.collectAsStateWithLifecycle()
     var showCreateDialog by remember { mutableStateOf(initialShowCreateDialog) }
+    val lifecycleOwner = LocalLifecycleOwner.current
     
-    LaunchedEffect(Unit) {
-        viewModel.loadBoards()
+    // Recargar tableros cada vez que la pantalla vuelve a estar visible
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            viewModel.loadBoards()
+        }
     }
     
     Scaffold(

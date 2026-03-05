@@ -23,7 +23,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         
-        // Obtener datos de la notificación
         val taskId = intent?.getIntExtra("taskId", -1) ?: -1
         val openTaskDetail = intent?.getBooleanExtra("openTaskDetail", false) ?: false
         

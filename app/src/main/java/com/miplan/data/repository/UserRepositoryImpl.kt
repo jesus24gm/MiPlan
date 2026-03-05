@@ -74,7 +74,6 @@ class UserRepositoryImpl @Inject constructor(
                 Result.failure(Exception(response.message))
             }
         } catch (e: Exception) {
-            e.printStackTrace()
             Result.failure(e)
         }
     }

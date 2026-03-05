@@ -24,8 +24,6 @@ class RescheduleNotificationsWorker(
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         try {
             val scheduler = NotificationScheduler(applicationContext)
-            
-            // Obtener todas las tareas pendientes con fecha límite
             val tasksResult = taskRepository.getTasks()
             tasksResult.onSuccess { tasks ->
                 tasks.filter { task ->
@@ -47,19 +45,12 @@ class RescheduleNotificationsWorker(
                         )
                     } catch (e: Exception) {
                         // Si hay error al parsear la fecha, continuar con la siguiente tarea
-                        e.printStackTrace()
                     }
                 }
             }
             
-            // Nota: No hay método getAllCards() en CardRepository
-            // Las tarjetas se obtienen por columna, por lo que no podemos
-            // re-programar todas las tarjetas sin conocer todas las columnas.
-            // Esto se debería manejar a nivel de tablero.
-            
             Result.success()
         } catch (e: Exception) {
-            e.printStackTrace()
             Result.retry()
         }
     }
