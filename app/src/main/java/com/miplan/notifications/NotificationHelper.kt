@@ -146,8 +146,14 @@ object NotificationHelper {
                 pendingIntent
             )
         
-        with(NotificationManagerCompat.from(context)) {
-            notify(notificationId, builder.build())
+        try {
+            with(NotificationManagerCompat.from(context)) {
+                if (com.miplan.utils.PermissionUtils.hasNotificationPermission(context)) {
+                    notify(notificationId, builder.build())
+                }
+            }
+        } catch (e: SecurityException) {
+            // Permisos de notificación no otorgados
         }
     }
     
@@ -214,8 +220,14 @@ object NotificationHelper {
                 pendingIntent
             )
         
-        with(NotificationManagerCompat.from(context)) {
-            notify(notificationId, builder.build())
+        try {
+            with(NotificationManagerCompat.from(context)) {
+                if (com.miplan.utils.PermissionUtils.hasNotificationPermission(context)) {
+                    notify(notificationId, builder.build())
+                }
+            }
+        } catch (e: SecurityException) {
+            // Permisos de notificación no otorgados
         }
     }
     
