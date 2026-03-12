@@ -1,5 +1,6 @@
 package com.miplan.ui.screens.auth
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -8,6 +9,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -43,22 +47,37 @@ fun RegisterScreen(
         }
     }
     
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Registro") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateToLogin) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
-                    }
-                }
+    // Degradado morado para toda la pantalla
+    val gradientBrush = Brush.verticalGradient(
+        colors = listOf(
+            Color(0xFF6B4FA0),  // Morado oscuro
+            Color(0xFF8B6FC7),  // Morado medio
+            Color(0xFF9B7FD8)   // Morado principal
+        )
+    )
+    
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(gradientBrush)
+    ) {
+        // Botón de volver en la esquina superior izquierda
+        IconButton(
+            onClick = onNavigateToLogin,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(8.dp)
+        ) {
+            Icon(
+                Icons.Default.ArrowBack,
+                contentDescription = "Volver",
+                tint = Color.White
             )
         }
-    ) { paddingValues ->
+        
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -66,7 +85,7 @@ fun RegisterScreen(
             Text(
                 text = "Crear Cuenta",
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.primary
+                color = Color.White
             )
             
             Spacer(modifier = Modifier.height(32.dp))
@@ -75,12 +94,19 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Nombre completo") },
+                label = { Text("Nombre completo", color = Color.White) },
                 leadingIcon = {
-                    Icon(Icons.Default.Person, contentDescription = null)
+                    Icon(Icons.Default.Person, contentDescription = null, tint = Color.White)
                 },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = Color.White,
+                    unfocusedBorderColor = Color.White.copy(alpha = 0.7f),
+                    cursorColor = Color.White
+                )
             )
             
             Spacer(modifier = Modifier.height(16.dp))
@@ -89,13 +115,20 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email") },
+                label = { Text("Email", color = Color.White) },
                 leadingIcon = {
-                    Icon(Icons.Default.Email, contentDescription = null)
+                    Icon(Icons.Default.Email, contentDescription = null, tint = Color.White)
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = Color.White,
+                    unfocusedBorderColor = Color.White.copy(alpha = 0.7f),
+                    cursorColor = Color.White
+                )
             )
             
             Spacer(modifier = Modifier.height(16.dp))
@@ -104,22 +137,30 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Contraseña") },
+                label = { Text("Contraseña", color = Color.White) },
                 leadingIcon = {
-                    Icon(Icons.Default.Lock, contentDescription = null)
+                    Icon(Icons.Default.Lock, contentDescription = null, tint = Color.White)
                 },
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
                             if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = Color.White
                         )
                     }
                 },
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = Color.White,
+                    unfocusedBorderColor = Color.White.copy(alpha = 0.7f),
+                    cursorColor = Color.White
+                )
             )
             
             Spacer(modifier = Modifier.height(16.dp))
@@ -128,15 +169,16 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
-                label = { Text("Confirmar contraseña") },
+                label = { Text("Confirmar contraseña", color = Color.White) },
                 leadingIcon = {
-                    Icon(Icons.Default.Lock, contentDescription = null)
+                    Icon(Icons.Default.Lock, contentDescription = null, tint = Color.White)
                 },
                 trailingIcon = {
                     IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
                         Icon(
                             if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                            contentDescription = null
+                            contentDescription = null,
+                            tint = Color.White
                         )
                     }
                 },
@@ -144,13 +186,21 @@ fun RegisterScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
-                isError = confirmPassword.isNotEmpty() && password != confirmPassword
+                isError = confirmPassword.isNotEmpty() && password != confirmPassword,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = Color.White,
+                    unfocusedBorderColor = Color.White.copy(alpha = 0.7f),
+                    errorBorderColor = Color(0xFFFFCDD2),
+                    cursorColor = Color.White
+                )
             )
             
             if (confirmPassword.isNotEmpty() && password != confirmPassword) {
                 Text(
                     text = "Las contraseñas no coinciden",
-                    color = MaterialTheme.colorScheme.error,
+                    color = Color(0xFFFFCDD2),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(start = 16.dp, top = 4.dp)
                 )
@@ -171,15 +221,21 @@ fun RegisterScreen(
                     .height(50.dp),
                 enabled = registerState !is UiState.Loading &&
                         name.isNotBlank() && email.isNotBlank() &&
-                        password.isNotBlank() && password == confirmPassword
+                        password.isNotBlank() && password == confirmPassword,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color(0xFF6B4FA0),
+                    disabledContainerColor = Color.White.copy(alpha = 0.6f),
+                    disabledContentColor = Color(0xFF6B4FA0).copy(alpha = 0.6f)
+                )
             ) {
                 if (registerState is UiState.Loading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = Color(0xFF6B4FA0)
                     )
                 } else {
-                    Text("Registrarse")
+                    Text("Registrarse", style = MaterialTheme.typography.labelLarge)
                 }
             }
             
@@ -187,7 +243,7 @@ fun RegisterScreen(
             
             // Botón para ir a login
             TextButton(onClick = onNavigateToLogin) {
-                Text("¿Ya tienes cuenta? Inicia sesión")
+                Text("¿Ya tienes cuenta? Inicia sesión", color = Color.White)
             }
             
             // Mostrar error si existe
@@ -195,7 +251,7 @@ fun RegisterScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = (registerState as UiState.Error).message,
-                    color = MaterialTheme.colorScheme.error,
+                    color = Color(0xFFFFCDD2),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

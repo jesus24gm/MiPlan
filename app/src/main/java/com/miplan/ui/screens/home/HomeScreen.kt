@@ -1,5 +1,6 @@
 package com.miplan.ui.screens.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,6 +10,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.miplan.domain.model.TaskStatus
@@ -168,6 +172,17 @@ fun HomeScreen(
     ) {
         Scaffold(
             topBar = {
+                // Degradado morado oscuro
+                val gradientBrush = Brush.linearGradient(
+                    colors = listOf(
+                        Color(0xFF6B4FA0),  // Morado oscuro
+                        Color(0xFF8B6FC7),  // Morado medio
+                        Color(0xFF9B7FD8)   // Morado principal
+                    ),
+                    start = Offset(0f, 0f),
+                    end = Offset(Float.POSITIVE_INFINITY, 0f)
+                )
+                
                 TopAppBar(
                     title = { Text("MiPlan") },
                     navigationIcon = {
@@ -191,12 +206,18 @@ fun HomeScreen(
                             IconButton(onClick = onNavigateToNotifications) {
                                 Icon(
                                     Icons.Default.Notifications, 
-                                    contentDescription = "Notificaciones",
-                                    tint = MaterialTheme.colorScheme.onSurface
+                                    contentDescription = "Notificaciones"
                                 )
                             }
                         }
-                    }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,
+                        titleContentColor = Color.White,
+                        navigationIconContentColor = Color.White,
+                        actionIconContentColor = Color.White
+                    ),
+                    modifier = Modifier.background(gradientBrush)
                 )
             },
             floatingActionButton = {

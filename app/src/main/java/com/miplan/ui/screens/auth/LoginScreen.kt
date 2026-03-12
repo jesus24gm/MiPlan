@@ -1,5 +1,6 @@
 package com.miplan.ui.screens.auth
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -11,6 +12,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -44,17 +48,23 @@ fun LoginScreen(
         }
     }
     
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Iniciar Sesión") }
-            )
-        }
-    ) { paddingValues ->
+    // Degradado morado para toda la pantalla
+    val gradientBrush = Brush.verticalGradient(
+        colors = listOf(
+            Color(0xFF6B4FA0),  // Morado oscuro
+            Color(0xFF8B6FC7),  // Morado medio
+            Color(0xFF9B7FD8)   // Morado principal
+        )
+    )
+    
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(gradientBrush)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -63,7 +73,7 @@ fun LoginScreen(
             Text(
                 text = "MiPlan",
                 style = MaterialTheme.typography.displayMedium,
-                color = MaterialTheme.colorScheme.primary
+                color = Color.White
             )
             
             Spacer(modifier = Modifier.height(8.dp))
@@ -71,7 +81,7 @@ fun LoginScreen(
             Text(
                 text = "Organiza tu día",
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = Color.White.copy(alpha = 0.9f)
             )
             
             Spacer(modifier = Modifier.height(48.dp))
@@ -80,13 +90,20 @@ fun LoginScreen(
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email") },
+                label = { Text("Email", color = Color.White) },
                 leadingIcon = {
-                    Icon(Icons.Default.Email, contentDescription = null)
+                    Icon(Icons.Default.Email, contentDescription = null, tint = Color.White)
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = Color.White,
+                    unfocusedBorderColor = Color.White.copy(alpha = 0.7f),
+                    cursorColor = Color.White
+                )
             )
             
             Spacer(modifier = Modifier.height(16.dp))
@@ -95,22 +112,30 @@ fun LoginScreen(
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Contraseña") },
+                label = { Text("Contraseña", color = Color.White) },
                 leadingIcon = {
-                    Icon(Icons.Default.Lock, contentDescription = null)
+                    Icon(Icons.Default.Lock, contentDescription = null, tint = Color.White)
                 },
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
                             if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                            contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
+                            contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña",
+                            tint = Color.White
                         )
                     }
                 },
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = Color.White,
+                    unfocusedBorderColor = Color.White.copy(alpha = 0.7f),
+                    cursorColor = Color.White
+                )
             )
             
             Spacer(modifier = Modifier.height(16.dp))
@@ -122,16 +147,22 @@ fun LoginScreen(
             ) {
                 Checkbox(
                     checked = rememberMe,
-                    onCheckedChange = { rememberMe = it }
+                    onCheckedChange = { rememberMe = it },
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = Color.White,
+                        uncheckedColor = Color.White,
+                        checkmarkColor = Color(0xFF6B4FA0)
+                    )
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Recordar sesión",
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White
                 )
             }
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             
             // Botón de login
             Button(
@@ -143,15 +174,21 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                enabled = loginState !is UiState.Loading
+                enabled = loginState !is UiState.Loading,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color(0xFF6B4FA0),
+                    disabledContainerColor = Color.White.copy(alpha = 0.6f),
+                    disabledContentColor = Color(0xFF6B4FA0).copy(alpha = 0.6f)
+                )
             ) {
                 if (loginState is UiState.Loading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = Color(0xFF6B4FA0)
                     )
                 } else {
-                    Text("Iniciar Sesión")
+                    Text("Iniciar Sesión", style = MaterialTheme.typography.labelLarge)
                 }
             }
             
@@ -159,7 +196,10 @@ fun LoginScreen(
             
             // Botón de registro
             TextButton(onClick = onNavigateToRegister) {
-                Text("¿No tienes cuenta? Regístrate")
+                Text(
+                    "¿No tienes cuenta? Regístrate",
+                    color = Color.White
+                )
             }
             
             // Mostrar error si existe
@@ -167,7 +207,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = (loginState as UiState.Error).message,
-                    color = MaterialTheme.colorScheme.error,
+                    color = Color(0xFFFFCDD2),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
