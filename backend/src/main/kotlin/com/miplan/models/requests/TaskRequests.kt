@@ -9,7 +9,12 @@ data class CreateTaskRequest(
     val priority: String,
     val dueDate: String? = null,
     val imageUrl: String? = null,
-    val boardId: Int? = null
+    val boardId: Int? = null,
+    // Campos de recurrencia
+    val recurrenceType: String = "NONE",
+    val recurrenceInterval: Int = 1,
+    val recurrenceDays: String? = null,
+    val recurrenceEndDate: String? = null
 )
 
 @Serializable
@@ -20,7 +25,12 @@ data class UpdateTaskRequest(
     val priority: String,
     val dueDate: String? = null,
     val imageUrl: String? = null,
-    val boardId: Int? = null
+    val boardId: Int? = null,
+    // Campos de recurrencia
+    val recurrenceType: String = "NONE",
+    val recurrenceInterval: Int = 1,
+    val recurrenceDays: String? = null,
+    val recurrenceEndDate: String? = null
 )
 
 @Serializable

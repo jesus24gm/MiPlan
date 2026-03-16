@@ -15,5 +15,12 @@ data class TaskResponse(
     val boardName: String? = null,
     val createdBy: Int,
     val createdAt: String,
-    val updatedAt: String
+    val updatedAt: String,
+    // Campos de recurrencia
+    val recurrenceType: String = "NONE",
+    val recurrenceInterval: Int = 1,
+    val recurrenceDays: String? = null,
+    val recurrenceEndDate: String? = null,
+    val isRecurringInstance: Boolean = false,
+    val parentTaskId: Int? = null
 )

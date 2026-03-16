@@ -112,6 +112,13 @@ object Tasks : Table("tasks") {
     val createdBy = integer("created_by").references(Users.id)
     val createdAt = datetime("created_at")
     val updatedAt = datetime("updated_at")
+    // Campos de recurrencia
+    val recurrenceType = varchar("recurrence_type", 50).default("NONE")
+    val recurrenceInterval = integer("recurrence_interval").default(1)
+    val recurrenceDays = varchar("recurrence_days", 50).nullable() // "1,3,5" para lun, mié, vie
+    val recurrenceEndDate = datetime("recurrence_end_date").nullable()
+    val isRecurringInstance = bool("is_recurring_instance").default(false)
+    val parentTaskId = integer("parent_task_id").nullable() // No usar .references() para evitar ciclos
     
     override val primaryKey = PrimaryKey(id)
 }

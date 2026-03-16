@@ -23,7 +23,11 @@ class TaskRepository {
         dueDate: LocalDateTime?,
         imageUrl: String?,
         boardId: Int?,
-        createdBy: Int
+        createdBy: Int,
+        recurrenceType: String = "NONE",
+        recurrenceInterval: Int = 1,
+        recurrenceDays: String? = null,
+        recurrenceEndDate: LocalDateTime? = null
     ): Task? = dbQuery {
         val insertStatement = Tasks.insert {
             it[Tasks.title] = title
@@ -36,6 +40,12 @@ class TaskRepository {
             it[Tasks.createdBy] = createdBy
             it[Tasks.createdAt] = LocalDateTime.now()
             it[Tasks.updatedAt] = LocalDateTime.now()
+            it[Tasks.recurrenceType] = recurrenceType
+            it[Tasks.recurrenceInterval] = recurrenceInterval
+            it[Tasks.recurrenceDays] = recurrenceDays
+            it[Tasks.recurrenceEndDate] = recurrenceEndDate
+            it[Tasks.isRecurringInstance] = false
+            it[Tasks.parentTaskId] = null
         }
         
         insertStatement.resultedValues?.singleOrNull()?.let(::rowToTask)
@@ -116,7 +126,11 @@ class TaskRepository {
         priority: String,
         dueDate: LocalDateTime?,
         imageUrl: String?,
-        boardId: Int?
+        boardId: Int?,
+        recurrenceType: String = "NONE",
+        recurrenceInterval: Int = 1,
+        recurrenceDays: String? = null,
+        recurrenceEndDate: LocalDateTime? = null
     ): Boolean = dbQuery {
         Tasks.update({ Tasks.id eq id }) {
             it[Tasks.title] = title
@@ -126,6 +140,10 @@ class TaskRepository {
             it[Tasks.dueDate] = dueDate
             it[Tasks.imageUrl] = imageUrl
             it[Tasks.boardId] = boardId
+            it[Tasks.recurrenceType] = recurrenceType
+            it[Tasks.recurrenceInterval] = recurrenceInterval
+            it[Tasks.recurrenceDays] = recurrenceDays
+            it[Tasks.recurrenceEndDate] = recurrenceEndDate
             it[updatedAt] = LocalDateTime.now()
         } > 0
     }
@@ -204,7 +222,13 @@ class TaskRepository {
             boardId = row[Tasks.boardId],
             createdBy = row[Tasks.createdBy],
             createdAt = row[Tasks.createdAt],
-            updatedAt = row[Tasks.updatedAt]
+            updatedAt = row[Tasks.updatedAt],
+            recurrenceType = row[Tasks.recurrenceType],
+            recurrenceInterval = row[Tasks.recurrenceInterval],
+            recurrenceDays = row[Tasks.recurrenceDays],
+            recurrenceEndDate = row[Tasks.recurrenceEndDate],
+            isRecurringInstance = row[Tasks.isRecurringInstance],
+            parentTaskId = row[Tasks.parentTaskId]
         )
     }
 }
