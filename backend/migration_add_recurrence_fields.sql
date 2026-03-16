@@ -1,23 +1,16 @@
--- Migración para añadir campos de recurrencia a la tabla tasks
+-- Migración para añadir campos de recurrencia a la tabla tasks (MySQL)
 -- Fecha: 16 de marzo de 2026
 
--- Añadir campos de recurrencia
-ALTER TABLE tasks ADD COLUMN IF NOT EXISTS recurrence_type VARCHAR(50) DEFAULT 'NONE';
-ALTER TABLE tasks ADD COLUMN IF NOT EXISTS recurrence_interval INTEGER DEFAULT 1;
-ALTER TABLE tasks ADD COLUMN IF NOT EXISTS recurrence_days VARCHAR(50);
-ALTER TABLE tasks ADD COLUMN IF NOT EXISTS recurrence_end_date TIMESTAMP;
-ALTER TABLE tasks ADD COLUMN IF NOT EXISTS is_recurring_instance BOOLEAN DEFAULT FALSE;
-ALTER TABLE tasks ADD COLUMN IF NOT EXISTS parent_task_id INTEGER;
+-- Añadir campos de recurrencia (sintaxis MySQL)
+ALTER TABLE tasks 
+ADD COLUMN recurrence_type VARCHAR(50) DEFAULT 'NONE' NOT NULL,
+ADD COLUMN recurrence_interval INT DEFAULT 1 NOT NULL,
+ADD COLUMN recurrence_days VARCHAR(50) NULL,
+ADD COLUMN recurrence_end_date DATETIME NULL,
+ADD COLUMN is_recurring_instance TINYINT(1) DEFAULT 0 NOT NULL,
+ADD COLUMN parent_task_id INT NULL;
 
--- Crear índice para mejorar búsquedas de tareas recurrentes
-CREATE INDEX IF NOT EXISTS idx_tasks_recurrence_type ON tasks(recurrence_type);
-CREATE INDEX IF NOT EXISTS idx_tasks_parent_task_id ON tasks(parent_task_id);
-CREATE INDEX IF NOT EXISTS idx_tasks_is_recurring_instance ON tasks(is_recurring_instance);
-
--- Comentarios para documentación
-COMMENT ON COLUMN tasks.recurrence_type IS 'Tipo de recurrencia: NONE, DAILY, WEEKLY, MONTHLY, YEARLY';
-COMMENT ON COLUMN tasks.recurrence_interval IS 'Intervalo de recurrencia (ej: cada 2 semanas)';
-COMMENT ON COLUMN tasks.recurrence_days IS 'Días de la semana para recurrencia semanal (ej: 1,3,5 para lun,mié,vie)';
-COMMENT ON COLUMN tasks.recurrence_end_date IS 'Fecha límite para dejar de generar instancias recurrentes';
-COMMENT ON COLUMN tasks.is_recurring_instance IS 'Indica si esta tarea es una instancia generada automáticamente';
-COMMENT ON COLUMN tasks.parent_task_id IS 'ID de la tarea padre si es una instancia recurrente';
+-- Crear índices para mejorar búsquedas de tareas recurrentes
+CREATE INDEX idx_tasks_recurrence_type ON tasks(recurrence_type);
+CREATE INDEX idx_tasks_parent_task_id ON tasks(parent_task_id);
+CREATE INDEX idx_tasks_is_recurring_instance ON tasks(is_recurring_instance);

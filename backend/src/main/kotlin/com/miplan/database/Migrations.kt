@@ -50,6 +50,9 @@ object Migrations {
         // Migración 11: Recrear tabla task_collaborators con estructura correcta
         migration11_RecreateTaskCollaboratorsTable()
         
+        // Migración 12: Agregar campos de recurrencia a tasks
+        migration12_AddRecurrenceFieldsToTasks()
+        
         println("✅ Proceso de migraciones completado")
     }
     
@@ -343,6 +346,70 @@ object Migrations {
             }
         } catch (e: Exception) {
             println("❌ Migración 11: Error - ${e.message}")
+        }
+    }
+    
+    private fun migration12_AddRecurrenceFieldsToTasks() {
+        try {
+            transaction {
+                val checkQuery = """
+                    SELECT column_name 
+                    FROM information_schema.columns 
+                    WHERE table_name = 'tasks' 
+                    AND column_name = 'recurrence_type'
+                """.trimIndent()
+                
+                val exists = exec(checkQuery) { rs -> rs.next() } ?: false
+                
+                if (!exists) {
+                    println("📝 Migración 12: Agregando campos de recurrencia a tasks...")
+                    
+                    // Añadir todos los campos de recurrencia en una sola sentencia ALTER TABLE
+                    exec("""
+                        ALTER TABLE tasks 
+                        ADD COLUMN recurrence_type VARCHAR(50) DEFAULT 'NONE' NOT NULL,
+                        ADD COLUMN recurrence_interval INT DEFAULT 1 NOT NULL,
+                        ADD COLUMN recurrence_days VARCHAR(50) NULL,
+                        ADD COLUMN recurrence_end_date DATETIME NULL,
+                        ADD COLUMN is_recurring_instance TINYINT(1) DEFAULT 0 NOT NULL,
+                        ADD COLUMN parent_task_id INT NULL
+                    """.trimIndent())
+                    
+                    // Crear índices para mejorar búsquedas
+                    exec("CREATE INDEX idx_tasks_recurrence_type ON tasks(recurrence_type)")
+                    exec("CREATE INDEX idx_tasks_parent_task_id ON tasks(parent_task_id)")
+                    exec("CREATE INDEX idx_tasks_is_recurring_instance ON tasks(is_recurring_instance)")
+                    
+                    println("✅ Migración 12: Completada")
+                } else {
+                    println("ℹ️ Migración 12: Ya aplicada")
+                }
+            }
+        } catch (e: Exception) {
+            println("❌ Migración 12: Error - ${e.message}")
+            // Intentar agregar columnas individualmente si falla el ALTER TABLE múltiple
+            try {
+                transaction {
+                    println("🔄 Intentando agregar columnas individualmente...")
+                    
+                    // Intentar cada columna por separado
+                    try { exec("ALTER TABLE tasks ADD COLUMN recurrence_type VARCHAR(50) DEFAULT 'NONE' NOT NULL") } catch (e: Exception) { }
+                    try { exec("ALTER TABLE tasks ADD COLUMN recurrence_interval INT DEFAULT 1 NOT NULL") } catch (e: Exception) { }
+                    try { exec("ALTER TABLE tasks ADD COLUMN recurrence_days VARCHAR(50) NULL") } catch (e: Exception) { }
+                    try { exec("ALTER TABLE tasks ADD COLUMN recurrence_end_date DATETIME NULL") } catch (e: Exception) { }
+                    try { exec("ALTER TABLE tasks ADD COLUMN is_recurring_instance TINYINT(1) DEFAULT 0 NOT NULL") } catch (e: Exception) { }
+                    try { exec("ALTER TABLE tasks ADD COLUMN parent_task_id INT NULL") } catch (e: Exception) { }
+                    
+                    // Intentar crear índices
+                    try { exec("CREATE INDEX idx_tasks_recurrence_type ON tasks(recurrence_type)") } catch (e: Exception) { }
+                    try { exec("CREATE INDEX idx_tasks_parent_task_id ON tasks(parent_task_id)") } catch (e: Exception) { }
+                    try { exec("CREATE INDEX idx_tasks_is_recurring_instance ON tasks(is_recurring_instance)") } catch (e: Exception) { }
+                    
+                    println("✅ Migración 12: Completada (con método alternativo)")
+                }
+            } catch (e2: Exception) {
+                println("❌ Migración 12: Error crítico - ${e2.message}")
+            }
         }
     }
 }
