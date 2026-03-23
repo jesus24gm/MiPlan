@@ -5,6 +5,8 @@ import androidx.room.PrimaryKey
 import com.miplan.domain.model.Task
 import com.miplan.domain.model.TaskPriority
 import com.miplan.domain.model.TaskStatus
+import com.miplan.domain.model.RecurrenceType
+import com.miplan.domain.model.DayOfWeek
 
 /**
  * Entidad de Room para tareas
@@ -26,7 +28,14 @@ data class TaskEntity(
     val createdAt: String,
     val updatedAt: String,
     val isSynced: Boolean = false, // Flag para indicar si está sincronizado con el servidor
-    val isDeleted: Boolean = false // Soft delete para sincronización
+    val isDeleted: Boolean = false, // Soft delete para sincronización
+    // Campos de recurrencia
+    val recurrenceType: String = "NONE",
+    val recurrenceInterval: Int = 1,
+    val recurrenceDays: String? = null, // Almacenado como "1,3,5" para lunes, miércoles, viernes
+    val recurrenceEndDate: String? = null,
+    val isRecurringInstance: Boolean = false,
+    val parentTaskId: Int? = null
 ) {
     /**
      * Convierte la entidad de Room a modelo de dominio
@@ -45,7 +54,13 @@ data class TaskEntity(
             boardName = null,
             createdBy = createdBy ?: 0,
             createdAt = createdAt,
-            updatedAt = updatedAt
+            updatedAt = updatedAt,
+            recurrenceType = RecurrenceType.fromString(recurrenceType),
+            recurrenceInterval = recurrenceInterval,
+            recurrenceDays = recurrenceDays?.split(",")?.mapNotNull { it.toIntOrNull() }?.map { DayOfWeek.fromValue(it) },
+            recurrenceEndDate = recurrenceEndDate,
+            isRecurringInstance = isRecurringInstance,
+            parentTaskId = parentTaskId
         )
     }
     
@@ -66,7 +81,13 @@ data class TaskEntity(
                 createdBy = task.createdBy,
                 createdAt = task.createdAt,
                 updatedAt = task.updatedAt,
-                isSynced = isSynced
+                isSynced = isSynced,
+                recurrenceType = task.recurrenceType.name,
+                recurrenceInterval = task.recurrenceInterval,
+                recurrenceDays = task.recurrenceDays?.joinToString(",") { it.value.toString() },
+                recurrenceEndDate = task.recurrenceEndDate,
+                isRecurringInstance = task.isRecurringInstance,
+                parentTaskId = task.parentTaskId
             )
         }
     }

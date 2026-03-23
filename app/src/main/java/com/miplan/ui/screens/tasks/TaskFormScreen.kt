@@ -21,11 +21,14 @@ import com.miplan.domain.model.Task
 import com.miplan.domain.model.TaskPriority
 import com.miplan.domain.model.UiState
 import com.miplan.domain.model.CollaboratorRole
+import com.miplan.domain.model.RecurrenceType
+import com.miplan.domain.model.DayOfWeek
 import com.miplan.ui.components.ImageSourceDialog
 import com.miplan.ui.components.SnackbarManager
 import com.miplan.ui.components.UnsplashSearchDialog
 import com.miplan.ui.components.AddCollaboratorDialog
 import com.miplan.ui.components.DateTimePickerDialog
+import com.miplan.ui.components.RecurrenceSelector
 import com.miplan.utils.CloudinaryManager
 import com.miplan.utils.rememberImagePickerLaunchers
 import com.miplan.viewmodel.TaskViewModel
@@ -65,6 +68,12 @@ fun TaskFormScreen(
     var isLoaded by remember { mutableStateOf(false) }
     var selectedBoardId by remember { mutableStateOf<Int?>(null) }
     var showBoardSelector by remember { mutableStateOf(false) }
+    
+    // Estados de recurrencia
+    var recurrenceType by remember { mutableStateOf(RecurrenceType.NONE) }
+    var recurrenceInterval by remember { mutableStateOf(1) }
+    var selectedRecurrenceDays by remember { mutableStateOf<List<DayOfWeek>>(emptyList()) }
+    var recurrenceEndDate by remember { mutableStateOf<String?>(null) }
     
     // Estados para imágenes
     var showImageSourceDialog by remember { mutableStateOf(false) }
@@ -638,6 +647,18 @@ fun TaskFormScreen(
                         }
                     }
                 }
+                
+                // Selector de recurrencia
+                RecurrenceSelector(
+                    recurrenceType = recurrenceType,
+                    recurrenceInterval = recurrenceInterval,
+                    selectedDays = selectedRecurrenceDays,
+                    recurrenceEndDate = recurrenceEndDate,
+                    onRecurrenceTypeChange = { recurrenceType = it },
+                    onRecurrenceIntervalChange = { recurrenceInterval = it },
+                    onSelectedDaysChange = { selectedRecurrenceDays = it },
+                    onRecurrenceEndDateChange = { recurrenceEndDate = it }
+                )
                 
                 // Colaboradores
                 Card(

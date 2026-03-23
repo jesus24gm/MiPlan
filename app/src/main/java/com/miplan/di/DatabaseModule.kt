@@ -31,6 +31,7 @@ object DatabaseModule {
             MiPlanDatabase::class.java,
             MiPlanDatabase.DATABASE_NAME
         )
+            .addMigrations(MiPlanDatabase.MIGRATION_1_2)
             .fallbackToDestructiveMigration() // En producción, usar migraciones apropiadas
             .build()
     }
